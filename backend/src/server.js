@@ -1,7 +1,7 @@
-module.export = {
-    user: 'postgreSQL 16',
+module.exports = {
+    user: 'postgres',
     host : 'localhost',
     database : 'computerStore_ecommerce',
-    password : 'noah112',
-    port : "5432"
-}
+    password : 'noah1112',
+    port : 5432,
+};
