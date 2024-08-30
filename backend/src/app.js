@@ -8,7 +8,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('API est en marche...');
+    res.send('Bonjour! API est en marche...');
 });
 
 module.exports = app;
