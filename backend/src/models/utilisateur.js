@@ -22,12 +22,15 @@ const Utilisateur = sequelize.define('User', {
     },
     role: {
         type: DataTypes.ENUM('Administrateur','Gestionnaire des produits', 'Gestionnaire des commandes'),
-        defaultValue: 'Gestionnaire des produits',
         allowNull: false
     },
     adresse: {
         type: DataTypes.STRING,
         allowNull:false
+    },
+    photo : {
+        type : DataTypes.STRING,
+        allowNull: true
     }
 });
 

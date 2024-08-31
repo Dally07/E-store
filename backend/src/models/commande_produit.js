@@ -32,6 +32,10 @@ const Commande_Produit = sequelize.define('Commande_Produit', {
     prix: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
+    },
+    photo : {
+        type : DataTypes.STRING,
+        allowNull: true
     }
 });
 

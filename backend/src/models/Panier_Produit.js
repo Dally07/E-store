@@ -28,6 +28,10 @@ const Panier_Produit = sequelize.define('Panier_Produit', {
     quantite: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    photo : {
+        type : DataTypes.STRING,
+        allowNull: true
     }
 });
 

@@ -27,6 +27,10 @@ const Client = sequelize.define('Client', {
     adresseCli: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    photo : {
+        type : DataTypes.STRING,
+        allowNull: true
     }
 });
 

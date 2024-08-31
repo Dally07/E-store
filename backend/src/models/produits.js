@@ -32,7 +32,20 @@ const Produit = sequelize.define('Produit', {
     reference: {
         type: DataTypes.STRING(100),
         allowNull: false
+    },
+    photo1 : {
+        type : DataTypes.STRING,
+        allowNull: false,
+    },
+    photo2 : {
+        type : DataTypes.STRING,
+        allowNull: true
+    },
+    photo3 : {
+        type : DataTypes.STRING,
+        allowNull: true
     }
+    
 });
 
 module.exports = Produit;
