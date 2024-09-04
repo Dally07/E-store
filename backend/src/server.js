@@ -18,7 +18,7 @@ const Panier_Produit = require('./models/Panier_Produit');
 
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 sequelize.sync({
     force: false

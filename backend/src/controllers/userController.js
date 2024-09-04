@@ -1,4 +1,5 @@
 const authService = require('../services/authService');
+const Utilisateur = require('../models/utilisateur'); 
 
 exports.register = async (req, res) => {
     try {
