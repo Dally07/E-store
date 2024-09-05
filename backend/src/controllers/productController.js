@@ -48,14 +48,40 @@ exports.getProductById = async (req, res) => {
     }
 };
 
+
 exports.updateProduct = async (req, res) => {
     try {
-        const updatedProduct = await productService.updateProduct(req.params.id, req.body);
-        res.status(200).json({ message: 'Produit mis à jour avec succès', updatedProduct });
+        const productId = req.params.id;
+
+        const product = await Produit.findByPk(productId);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Produit non trouvé' });
+        }
+
+        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles } = req.body;
+
+        const photo1 = req.file ? req.file.filename : product.photo1; 
+
+
+        const updatedProduct = await product.update({
+            nom: nom || product.nom,
+            description: description || product.description,
+            prix: prix || product.prix,
+            quantite_en_stock: quantite_en_stock || product.quantite_en_stock,
+            categorie: categorie || product.categorie,
+            reference: reference || product.reference,
+            couleur_disponibles: couleur_disponibles || product.couleur_disponibles,
+            photo1: photo1 
+        });
+
+        res.status(200).json(updatedProduct);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du produit' });
     }
 };
+
 
 exports.deleteProduct = async (req, res) => {
     try {
