@@ -9,8 +9,7 @@ exports.createProduct = async (req, res) => {
         
        
         const photo1 = req.file ? req.file.filename : null;
-        const photo2 = req.file ? req.file.filename : null;
-        const photo3 = req.file ? req.file.filename : null;
+        
         
         const newProduct = await Produit.create({
             nom,
@@ -20,9 +19,7 @@ exports.createProduct = async (req, res) => {
             categorie,
             reference,
             couleur_disponibles,
-            photo1,
-            photo2,
-            photo3
+            photo1
         });
         
         res.status(201).json(newProduct);
