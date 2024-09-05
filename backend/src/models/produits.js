@@ -33,6 +33,10 @@ const Produit = sequelize.define('Produit', {
         type: DataTypes.STRING(100),
         allowNull: false
     },
+    statutStock: {
+        type: DataTypes.ENUM('Disponible', 'Rupture de stock', 'Stock critique'),
+        defaultValue: 'Disponible'
+    },
     photo1 : {
         type : DataTypes.STRING,
         allowNull: false,
@@ -46,6 +50,9 @@ const Produit = sequelize.define('Produit', {
         allowNull: true
     }
     
+},
+{
+    timestamps: true
 });
 
 module.exports = Produit;

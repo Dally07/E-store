@@ -4,11 +4,10 @@ const userController = require('../controllers/userController');
 const { authMiddleware, requireRole } = require('../middlewares/authMiddleware');
 
 // Auth routes
-
 router.post('/login', userController.login);
 
 // Admin routes
-router.post('/register', authMiddleware, requireRole('Administrateur'), userController.register);
+router.post('/register', userController.register);
 router.get('/', authMiddleware, requireRole('Administrateur'), userController.getAllUsers);
 router.get('/:id', authMiddleware, requireRole('Administrateur'), userController.getUserById);
 router.put('/:id', authMiddleware, requireRole('Administrateur'), userController.updateUser);
