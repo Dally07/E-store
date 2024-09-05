@@ -1,5 +1,8 @@
 const Produit = require('../models/produits');
 const productService = require('../services/productService');
+const { envoyerNotificationProduits } = require('../utils/notificationUtil');
+
+
 
 
 exports.createProduct = async (req, res) => {
@@ -9,6 +12,14 @@ exports.createProduct = async (req, res) => {
         
        
         const photo1 = req.file ? req.file.filename : null;
+
+        const message = `Le produit "${nom}" a été créé.`;
+        await envoyerNotificationProduits(message);
+        
+        if (Produit.quantite_en_stock <= 10) {
+            const message = `Le produit "${nom}" est en rupture de stock.`;
+            await envoyerNotificationProduits(message);
+        }
         
         
         const newProduct = await Produit.create({
@@ -55,6 +66,14 @@ exports.updateProduct = async (req, res) => {
 
         const product = await Produit.findByPk(productId);
 
+        const message = `Le produit "${product.nom}" a été mis à jour.`;
+        await envoyerNotificationProduits(message);
+
+        if (product.quantite_en_stock <= 10) {
+            const message = `Le produit "${product.nom}" est en rupture de stock.`;
+            await envoyerNotificationProduits(message);
+        }
+
         if (!product) {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
@@ -90,4 +109,7 @@ exports.deleteProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+
+    const message = `Le produit "${Produit.nom}" a été mis à jour.`;
+    await envoyerNotificationProduits(message);
 };

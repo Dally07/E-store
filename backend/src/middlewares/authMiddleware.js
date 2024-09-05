@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+
 const secretKey = process.env.JWT_SECRET || 'secret';
 
 exports.authMiddleware = (req, res, next) => {
@@ -26,3 +27,4 @@ exports.requireRole = (...roles) => {
         next();
     };
 };
+

@@ -10,6 +10,7 @@ const Notification = sequelize.define('Notification', {
     },
     utilisateur_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
             model: Utilisateur,
             key: 'idUtilisateur'
@@ -20,14 +21,15 @@ const Notification = sequelize.define('Notification', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    vue: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    date_notification: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+    
+    statut: {
+        type: DataTypes.ENUM('Vu', 'non lu'),
+        defaultValue: 'non lu'
     }
+
+},
+{
+    timestamps: true,
 });
 
 module.exports = Notification;
