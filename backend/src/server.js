@@ -15,6 +15,10 @@ const Config_Imprimante = require('./models/config_imprimante');
 const Config_Telephone = require('./models/config_telephone');
 const Config_Pc = require('./models/config_pc');
 const Panier_Produit = require('./models/Panier_Produit');
+const Livraison = require('./models/livraison');
+
+
+require('./models/association');
 
 
 

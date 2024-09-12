@@ -37,6 +37,9 @@ const Config_Pc = sequelize.define('Config_Pc', {
     clavier_rgb: {
         type: DataTypes.BOOLEAN
     }
+},
+{
+    timestamps: true
 });
 
 module.exports = Config_Pc;

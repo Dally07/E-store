@@ -28,6 +28,9 @@ const Config_Imprimante = sequelize.define('Config_Imprimante', {
     vitesse_impression: {
         type: DataTypes.STRING(50)
     }
+},
+{
+    timestamps: true
 });
 
 module.exports = Config_Imprimante;

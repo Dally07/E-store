@@ -1,4 +1,9 @@
 const Produit = require('../models/produits');
+const ConfigurationPC = require('../models/config_pc');
+const ConfigurationImprimante = require('../models/config_imprimante');
+const ConfigurationTelephone = require('../models/config_telephone');
+const ConfigurationAccessoire = require('../models/config_accessoire');
+
 const productService = require('../services/productService');
 const { envoyerNotificationProduits } = require('../utils/notificationUtil');
 
@@ -7,20 +12,9 @@ const { envoyerNotificationProduits } = require('../utils/notificationUtil');
 
 exports.createProduct = async (req, res) => {
     try {
-        
-        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles } = req.body;
-        
-       
-        const photo1 = req.file ? req.file.filename : null;
+        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles, configuration } = req.body;
+        const photo1 = req.file ? req.file.filename : null;       
 
-        const message = `Le produit "${nom}" a été créé.`;
-        await envoyerNotificationProduits(message);
-        
-        if (Produit.quantite_en_stock <= 10) {
-            const message = `Le produit "${nom}" est en rupture de stock.`;
-            await envoyerNotificationProduits(message);
-        }
-        
         
         const newProduct = await Produit.create({
             nom,
@@ -32,7 +26,52 @@ exports.createProduct = async (req, res) => {
             couleur_disponibles,
             photo1
         });
-        
+
+        // configuration correspondante
+        if (categorie === 'PC') {
+            await ConfigurationPC.create({
+                produit_id: newProduct.idProduit,
+                carte_graphique: configuration.carte_graphique,
+                ram: configuration.ram,
+                rom: configuration.rom,
+                ecran: configuration.ecran,
+                tactile: configuration.tactile,
+                clavier_rgb: configuration.clavier_rgb
+            });
+        } else if (categorie === 'Imprimante') {
+            await ConfigurationImprimante.create({
+                produit_id: newProduct.idProduit,
+                typeImprimante: configuration.typeImprimante,
+                resolution: configuration.resolution,
+                vitesseImpression: configuration.vitesseImpression,
+                connectivite: configuration.connectivite
+            });
+        } else if (categorie === 'Telephone') {
+            await ConfigurationTelephone.create({
+                produit_id: newProduct.idProduit,
+                processeur: configuration.processeur,
+                ram: configuration.ram,
+                stockage: configuration.stockage,
+                tailleEcran: configuration.tailleEcran
+            });
+        } else if (categorie === 'Accessoire') {
+            await ConfigurationAccessoire.create({
+                produit_id: newProduct.idProduit,
+                typeAccessoire: configuration.typeAccessoire,
+                compatibilite: configuration.compatibilite,
+                marque: configuration.marque
+            });
+        }
+
+        // Notification
+        const message = `Le produit "${newProduct.nom}" a été créé.`;
+        await envoyerNotificationProduits(message);
+
+        if (newProduct.quantite_en_stock <= 10) {
+            const stockMessage = `Le produit "${newProduct.nom}" est en rupture de stock.`;
+            await envoyerNotificationProduits(stockMessage);
+        }
+
         res.status(201).json(newProduct);
     } catch (error) {
         console.error(error);
@@ -52,7 +91,19 @@ exports.getAllProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
     try {
-        const product = await productService.getProductById(req.params.id);
+        const product = await Produit.findByPk(req.params.id, {
+            include: [
+                { model: ConfigurationPC, as: 'configPC' },
+                { model: ConfigurationImprimante, as: 'configImprimante' },
+                { model: ConfigurationTelephone, as: 'configTelephone' },
+                { model: ConfigurationAccessoire, as: 'configAccessoire' }
+            ]
+        });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Produit non trouvé' });
+        }
+
         res.status(200).json(product);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -60,28 +111,18 @@ exports.getProductById = async (req, res) => {
 };
 
 
+
 exports.updateProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-
         const product = await Produit.findByPk(productId);
-
-        const message = `Le produit "${product.nom}" a été mis à jour.`;
-        await envoyerNotificationProduits(message);
-
-        if (product.quantite_en_stock <= 10) {
-            const message = `Le produit "${product.nom}" est en rupture de stock.`;
-            await envoyerNotificationProduits(message);
-        }
 
         if (!product) {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
-        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles } = req.body;
-
-        const photo1 = req.file ? req.file.filename : product.photo1; 
-
+        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles, configuration } = req.body;
+        const photo1 = req.file ? req.file.filename : product.photo1;
 
         const updatedProduct = await product.update({
             nom: nom || product.nom,
@@ -91,8 +132,40 @@ exports.updateProduct = async (req, res) => {
             categorie: categorie || product.categorie,
             reference: reference || product.reference,
             couleur_disponibles: couleur_disponibles || product.couleur_disponibles,
-            photo1: photo1 
+            photo1: photo1
         });
+
+        // Mise à jour de la configuration en fonction de la catégorie
+        if (categorie === 'PC' && configuration) {
+            await ConfigurationPC.update({
+                carte_graphique: configuration.carte_graphique,
+                ram: configuration.ram,
+                rom: configuration.rom,
+                ecran: configuration.ecran,
+                tactile: configuration.tactile,
+                clavier_rgb: configuration.clavier_rgb
+            }, { where: { produit_id: productId } });
+        } else if (categorie === 'Imprimante' && configuration) {
+            await ConfigurationImprimante.update({
+                typeImprimante: configuration.typeImprimante,
+                resolution: configuration.resolution,
+                vitesseImpression: configuration.vitesseImpression,
+                connectivite: configuration.connectivite
+            }, { where: { produit_id: productId } });
+        } else if (categorie === 'Telephone' && configuration) {
+            await ConfigurationTelephone.update({
+                processeur: configuration.processeur,
+                ram: configuration.ram,
+                stockage: configuration.stockage,
+                tailleEcran: configuration.tailleEcran
+            }, { where: { produit_id: productId } });
+        } else if (categorie === 'Accessoire' && configuration) {
+            await ConfigurationAccessoire.update({
+                typeAccessoire: configuration.typeAccessoire,
+                compatibilite: configuration.compatibilite,
+                marque: configuration.marque
+            }, { where: { produit_id: productId } });
+        }
 
         res.status(200).json(updatedProduct);
     } catch (error) {
@@ -100,6 +173,7 @@ exports.updateProduct = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la mise à jour du produit' });
     }
 };
+
 
 
 exports.deleteProduct = async (req, res) => {
@@ -110,6 +184,6 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 
-    const message = `Le produit "${Produit.nom}" a été mis à jour.`;
+    const message = `Le produit "${Produit.nom}" a été supprimer.`;
     await envoyerNotificationProduits(message);
 };

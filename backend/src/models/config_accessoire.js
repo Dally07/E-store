@@ -25,6 +25,9 @@ const Config_Accessoire = sequelize.define('Config_Accessoire', {
     compatibilite: {
         type: DataTypes.STRING(255)
     }
+},
+{
+    timestamps: true
 });
 
 module.exports = Config_Accessoire;

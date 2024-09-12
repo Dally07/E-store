@@ -28,6 +28,9 @@ const Config_Telephone = sequelize.define('Config_Telephone', {
     processeur: {
         type: DataTypes.STRING(100)
     }
+},
+{
+    timestamps: true
 });
 
 module.exports = Config_Telephone;

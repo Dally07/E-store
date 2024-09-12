@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
+
 const Produit = sequelize.define('Produit', {
     idProduit: {
         type: DataTypes.INTEGER,
@@ -31,7 +32,7 @@ const Produit = sequelize.define('Produit', {
     },
     reference: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     },
     statutStock: {
         type: DataTypes.ENUM('Disponible', 'Rupture de stock', 'Stock critique'),
@@ -54,5 +55,8 @@ const Produit = sequelize.define('Produit', {
 {
     timestamps: true
 });
+
+
+
 
 module.exports = Produit;
