@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
-    
+    // recuperer le donner dans .env
     process.env.DB_NAME,
     process.env.DB_USER,
     process.env.DB_PASSWORD,

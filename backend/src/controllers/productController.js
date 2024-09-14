@@ -9,11 +9,16 @@ const { envoyerNotificationProduits } = require('../utils/notificationUtil');
 
 
 
-
+// cree un produit
 exports.createProduct = async (req, res) => {
     try {
-        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles, configuration } = req.body;
-        const photo1 = req.file ? req.file.filename : null;       
+        const { nom, description, prix, quantite_en_stock, categorie, reference, couleurs_disponibles, configuration } = req.body;
+        const photo1 = req.file ? req.file.filename : null;    
+        
+        let couleursArray = couleurs_disponibles;
+        if (typeof couleurs_disponibles === 'string') {
+            couleursArray = couleurs_disponibles.split(',').map(couleur => couleur.trim());
+        }
 
         
         const newProduct = await Produit.create({
@@ -23,17 +28,18 @@ exports.createProduct = async (req, res) => {
             quantite_en_stock,
             categorie,
             reference,
-            couleur_disponibles,
+            couleurs_disponibles:couleursArray,
             photo1
         });
 
-        // configuration correspondante
+        // cree une configuration correspondante au categorie de produit
         if (categorie === 'PC') {
             await ConfigurationPC.create({
                 produit_id: newProduct.idProduit,
                 carte_graphique: configuration.carte_graphique,
                 ram: configuration.ram,
                 rom: configuration.rom,
+                marque: configuration.marque,
                 ecran: configuration.ecran,
                 tactile: configuration.tactile,
                 clavier_rgb: configuration.clavier_rgb
@@ -43,6 +49,7 @@ exports.createProduct = async (req, res) => {
                 produit_id: newProduct.idProduit,
                 typeImprimante: configuration.typeImprimante,
                 resolution: configuration.resolution,
+                marque: configuration.marque,
                 vitesseImpression: configuration.vitesseImpression,
                 connectivite: configuration.connectivite
             });
@@ -51,7 +58,8 @@ exports.createProduct = async (req, res) => {
                 produit_id: newProduct.idProduit,
                 processeur: configuration.processeur,
                 ram: configuration.ram,
-                stockage: configuration.stockage,
+                marque: configuration.marque,
+                stockage: configuration.rom,
                 tailleEcran: configuration.tailleEcran
             });
         } else if (categorie === 'Accessoire') {
@@ -80,6 +88,7 @@ exports.createProduct = async (req, res) => {
 };
 
 
+// recuperer tout
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await productService.getAllProducts();
@@ -89,6 +98,7 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
+// recuperer un produit avec toutes ses configuration
 exports.getProductById = async (req, res) => {
     try {
         const product = await Produit.findByPk(req.params.id, {
@@ -111,7 +121,7 @@ exports.getProductById = async (req, res) => {
 };
 
 
-
+// mettre a jour un produit
 exports.updateProduct = async (req, res) => {
     try {
         const productId = req.params.id;
@@ -121,8 +131,13 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
-        const { nom, description, prix, quantite_en_stock, categorie, reference, couleur_disponibles, configuration } = req.body;
+        const { nom, description, prix, quantite_en_stock, categorie, reference, couleurs_disponibles, configuration } = req.body;
         const photo1 = req.file ? req.file.filename : product.photo1;
+
+        let couleursArray = couleurs_disponibles;
+        if (typeof couleurs_disponibles === 'string') {
+            couleursArray = couleurs_disponibles.split(',').map(couleur => couleur.trim());
+        }
 
         const updatedProduct = await product.update({
             nom: nom || product.nom,
@@ -131,7 +146,7 @@ exports.updateProduct = async (req, res) => {
             quantite_en_stock: quantite_en_stock || product.quantite_en_stock,
             categorie: categorie || product.categorie,
             reference: reference || product.reference,
-            couleur_disponibles: couleur_disponibles || product.couleur_disponibles,
+            couleurs_disponibles: couleursArray || product.couleurs_disponibles,
             photo1: photo1
         });
 
@@ -143,6 +158,7 @@ exports.updateProduct = async (req, res) => {
                 rom: configuration.rom,
                 ecran: configuration.ecran,
                 tactile: configuration.tactile,
+                marque: configuration.marque,
                 clavier_rgb: configuration.clavier_rgb
             }, { where: { produit_id: productId } });
         } else if (categorie === 'Imprimante' && configuration) {
@@ -150,14 +166,15 @@ exports.updateProduct = async (req, res) => {
                 typeImprimante: configuration.typeImprimante,
                 resolution: configuration.resolution,
                 vitesseImpression: configuration.vitesseImpression,
-                connectivite: configuration.connectivite
+                connectivite: configuration.connectivite,
+                marque: configuration.marque
             }, { where: { produit_id: productId } });
         } else if (categorie === 'Telephone' && configuration) {
             await ConfigurationTelephone.update({
                 processeur: configuration.processeur,
                 ram: configuration.ram,
-                stockage: configuration.stockage,
-                tailleEcran: configuration.tailleEcran
+                rom: configuration.rom,
+                marque: configuration.marque
             }, { where: { produit_id: productId } });
         } else if (categorie === 'Accessoire' && configuration) {
             await ConfigurationAccessoire.update({

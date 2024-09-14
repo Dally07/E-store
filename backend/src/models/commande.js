@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 const Client = require('./client');
+const Produit = require('./produits');
+
 
 const Commande = sequelize.define('Commande', {
     idCommande: {
@@ -21,17 +23,17 @@ const Commande = sequelize.define('Commande', {
         defaultValue: DataTypes.NOW
     },
     statut: {
-        type: DataTypes.ENUM('En cours', 'Expédiée', 'Livrée', 'Annulée'),
+        type: DataTypes.ENUM('En cours', 'Expédiée', 'Livrée', 'Annulée', 'En livraison'),
         defaultValue: 'En cours'
-    },
-    adresse_livraison: {
-        type: DataTypes.TEXT,
-        allowNull: false
     },
     total: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     }
 });
+
+
+
+
 
 module.exports = Commande;

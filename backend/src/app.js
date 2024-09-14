@@ -7,7 +7,7 @@ const app = express();
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const commandeRoutes = require('./routes/commandeRoutes');
-const livraisonRoutes = require('./routes/livraisonRoutes')
+const livraisonRoutes = require('./routes/livraisonRoutes');
 const bodyParser = require('body-parser');
 
 app.use(cors());

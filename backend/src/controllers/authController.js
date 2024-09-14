@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const utilisateur = require('../models/utilisateur');
 
+// registration des utilisateurs avec hachage de mot de passe
 exports.registerUser = async (req, res) => {
     const {nom, email, mot_de_passe} = req.body;
 
@@ -18,7 +19,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-
+// connection des utilisateur avec validation de token
 exports.loginUser = async (req, res) => {
     const {email, mot_de_passe} = req.body;
 

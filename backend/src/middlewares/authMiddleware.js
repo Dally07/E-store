@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.JWT_SECRET || 'secret';
 
+// verification token
 exports.authMiddleware = (req, res, next) => {
     const token = req.header('Authorization').replace('Bearer ', '');
     
@@ -17,6 +18,7 @@ exports.authMiddleware = (req, res, next) => {
     }
 };
 
+// identification du role d'un utilisateur
 exports.requireRole = (...roles) => {
     return (req, res, next) => {
         console.log("Rôle requis:", roles);

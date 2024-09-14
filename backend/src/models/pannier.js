@@ -16,6 +16,9 @@ const Panier = sequelize.define('Panier', {
         },
         onDelete: 'CASCADE'
     }
+},
+{
+    timestamps: false
 });
 
 module.exports = Panier;

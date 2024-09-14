@@ -1,6 +1,7 @@
 const authService = require('../services/authService');
 const Utilisateur = require('../models/utilisateur'); 
 
+// registration
 exports.register = async (req, res) => {
     try {
         const newUser = await authService.register(req.body);
@@ -10,6 +11,7 @@ exports.register = async (req, res) => {
     }
 };
 
+// connection
 exports.login = async (req, res) => {
     try {
         const { email, mot_de_passe } = req.body;
@@ -20,6 +22,7 @@ exports.login = async (req, res) => {
     }
 };
 
+// voir tout
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await Utilisateur.findAll();
@@ -29,6 +32,7 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
+// voir un utilisateur
 exports.getUserById = async (req, res) => {
     try {
         const user = await Utilisateur.findByPk(req.params.id);
@@ -40,6 +44,8 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+
+// modifier un utilisateur
 exports.updateUser = async (req, res) => {
     try {
         const user = await Utilisateur.findByPk(req.params.id);
@@ -52,6 +58,7 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// supprimer un utilisateur
 exports.deleteUser = async (req, res) => {
     try {
         const user = await Utilisateur.findByPk(req.params.id);
