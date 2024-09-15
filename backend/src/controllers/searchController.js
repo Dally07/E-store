@@ -17,9 +17,9 @@ const rechercher = async (req, res) => {
         const produits = await Produit.findAll({
             where: {
                 [Op.or]: [
-                    { nom: { [Op.like]: `%${query}%` } },
-                    { description: { [Op.like]: `%${query}%` } },
-                    { reference: { [Op.like]: `%${query}%` } }
+                    { nom: { [Op.iLike]: `%${query}%` } },
+                    { description: { [Op.iLike]: `%${query}%` } },
+                    { reference: { [Op.iLike]: `%${query}%` } }
                 ]
             },
             include: [
@@ -30,62 +30,65 @@ const rechercher = async (req, res) => {
             ]
         });
 
-        // Rechercher produits par configuration
-        const produitsParConfig = await Produit.findAll({
-            include: [
-                { 
-                    model: Config_Pc, as: 'configPC',
-                    where: {
-                        [Op.or]: [
-                            { marque: { [Op.like]: `%${query}%` } },
-                            { ram: { [Op.like]: `%${query}%` } },
-                            { carte_graphique: { [Op.like]: `%${query}%` } }
-                        ]
+        // Rechercher produits par configuration seulement si aucun produit n'a été trouvé dans 'produits'
+        let produitsParConfig = [];
+        if (produits.length === 0) {
+            produitsParConfig = await Produit.findAll({
+                include: [
+                    { 
+                        model: Config_Pc, as: 'configPC',
+                        where: {
+                            [Op.or]: [
+                                { marque: { [Op.iLike]: `%${query}%` } },
+                                { ram: { [Op.iLike]: `%${query}%` } },
+                                { carte_graphique: { [Op.iLike]: `%${query}%` } }
+                            ]
+                        },
+                        required: true
                     },
-                    required: false
-                },
-                { 
-                    model: Config_Telephone, as: 'configTelephone',
-                    where: {
-                        [Op.or]: [
-                            { marque: { [Op.like]: `%${query}%` } },
-                            { ram: { [Op.like]: `%${query}%` } },
-                            { processeur: { [Op.like]: `%${query}%` } }
-                        ]
+                    { 
+                        model: Config_Telephone, as: 'configTelephone',
+                        where: {
+                            [Op.or]: [
+                                { marque: { [Op.iLike]: `%{query}%` } },
+                                { ram: { [Op.iLike]: `%{query}%` } },
+                                { processeur: { [Op.iLike]: `%{query}%` } }
+                            ]
+                        },
+                        required: true
                     },
-                    required: false
-                },
-                { 
-                    model: Config_Imprimante, as: 'configImprimante',
-                    where: {
-                        [Op.or]: [
-                            { marque: { [Op.like]: `%${query}%` } },
-                            { type_d_impression: { [Op.like]: `%${query}%` } },
-                            { resolution: { [Op.like]: `%${query}%` } }
-                        ]
+                    { 
+                        model: Config_Imprimante, as: 'configImprimante',
+                        where: {
+                            [Op.or]: [
+                                { marque: { [Op.iLike]: `%{query}%` } },
+                                { type_d_impression: { [Op.iLike]: `%{query}%` } },
+                                { resolution: { [Op.iLike]: `%{query}%` } }
+                            ]
+                        },
+                        required: true
                     },
-                    required: false
-                },
-                { 
-                    model: Config_Accessoire, as: 'configAccessoire',
-                    where: {
-                        [Op.or]: [
-                            { compatibilite: { [Op.like]: `%${query}%` } },
-                            { marque: { [Op.like]: `%${query}%` } }
-                        ]
-                    },
-                    required: false
-                }
-            ]
-        });
+                    { 
+                        model: Config_Accessoire, as: 'configAccessoire',
+                        where: {
+                            [Op.or]: [
+                                { compatibilite: { [Op.iLike]: `%{query}%` } },
+                                { marque: { [Op.iLike]: `%{query}%` } }
+                            ]
+                        },
+                        required: true
+                    }
+                ]
+            });
+        }
 
         // Rechercher clients par nom, adresse, ou email
         const clients = await Client.findAll({
             where: {
                 [Op.or]: [
-                    { nomCli: { [Op.like]: `%${query}%` } },
-                    { adresseCli: { [Op.like]: `%${query}%` } },
-                    { emailCli: { [Op.like]: `%${query}%` } }
+                    { nomCli: { [Op.iLike]: `%${query}%` } },
+                    { adresseCli: { [Op.iLike]: `%${query}%` } },
+                    { emailCli: { [Op.iLike]: `%${query}%` } }
                 ]
             }
         });
@@ -95,18 +98,17 @@ const rechercher = async (req, res) => {
             where: {
                 [Op.or]: [
                     isNumeric ? { idCommande: query } : null,  // Recherche par ID uniquement si c'est un nombre
-                   
                 ].filter(Boolean)  // Filtrer les conditions nulles
             },
             include: [
                 { model: Client, as: 'client' },
-                { model: Produit,as: 'produits', through: { attributes: ['quantite', 'prix'] } }
+                { model: Produit, as: 'produits', through: { attributes: ['quantite', 'prix'] } }
             ]
         });
 
+        // Retourner les résultats, en ne renvoyant 'produitsParConfig' que si 'produits' est vide
         return res.json({
-            produits,
-            produitsParConfig,
+            produits: produits.length > 0 ? produits : produitsParConfig,
             clients,
             commandes
         });
