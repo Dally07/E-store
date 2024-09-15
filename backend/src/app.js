@@ -23,7 +23,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/commande', commandeRoutes);
 app.use('/api/livraison', livraisonRoutes);
 app.use('/api/recherche', searchRoutes);
-app.use('./api/stat', dashbordRoutes);
+app.use('/api/stat', dashbordRoutes);
 
 app.get('/', (req, res) => {
     res.send('Bonjour! API est en marche...');
