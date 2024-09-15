@@ -46,8 +46,6 @@ exports.createProduct = async (productData, configurationData, user) => {
         });
     }
 
-    // Gestion de la notification (tu l'as peut-être dans un service séparé)
-    // await notificationService.createNotification(user.id, `Produit créé : ${newProduct.nom}`);
     return newProduct;
 };
 
@@ -90,8 +88,7 @@ exports.updateProduct = async (id, productData, configurationData, user) => {
         }, { where: { produit_id: id } });
     }
 
-    // Gestion de la notification
-    // await notificationService.createNotification(user.id, `Produit mis à jour : ${product.nom}`);
+  
     return product;
 };
 
@@ -111,6 +108,5 @@ exports.deleteProduct = async (id, user) => {
     if (!product) throw new Error('Produit non trouvé');
     await product.destroy();
 
-    // Gestion de la notification
-    // await notificationService.createNotification(user.id, `Produit supprimé : ${product.nom}`);
+
 };

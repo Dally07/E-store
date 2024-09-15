@@ -2,6 +2,7 @@ const { Sequelize } = require('sequelize');
 const Commande = require('../models/commande');
 const Utilisateur = require('../models/utilisateur');
 const Client = require('../models/client');
+const Produit = require('../models/produits');
 
 
 // FONCTION STATISTIQUE GENERALE
@@ -53,5 +54,32 @@ exports.getVisitorByDay = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Erreur lors de la recuperation des visites par jours', error});
     }
+};
+
+exports.getRecentOrders = async (req, res) => {
+    try {
+        const recentOrders = await Commande.findAll({
+            order: [['date_commande', 'DESC']],
+            limit: 10,
+            include: [
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['nomCli', 'emailCli']
+                },
+                {
+                    model: Produit,
+                    as: 'produits',
+                    through: { attributes: ['quantite', 'prix'] }
+                }
+            ]
+        });
+        res.status(200).json(recentOrders);
+
+    }catch(error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la recuperation de la commande recente'})
+    }
+   
 }
 
