@@ -41,7 +41,8 @@ const rechercher = async (req, res) => {
                             { ram: { [Op.like]: `%${query}%` } },
                             { carte_graphique: { [Op.like]: `%${query}%` } }
                         ]
-                    }
+                    },
+                    required: false
                 },
                 { 
                     model: Config_Telephone, as: 'configTelephone',
@@ -51,7 +52,8 @@ const rechercher = async (req, res) => {
                             { ram: { [Op.like]: `%${query}%` } },
                             { processeur: { [Op.like]: `%${query}%` } }
                         ]
-                    }
+                    },
+                    required: false
                 },
                 { 
                     model: Config_Imprimante, as: 'configImprimante',
@@ -61,7 +63,8 @@ const rechercher = async (req, res) => {
                             { type_d_impression: { [Op.like]: `%${query}%` } },
                             { resolution: { [Op.like]: `%${query}%` } }
                         ]
-                    }
+                    },
+                    required: false
                 },
                 { 
                     model: Config_Accessoire, as: 'configAccessoire',
@@ -70,7 +73,8 @@ const rechercher = async (req, res) => {
                             { compatibilite: { [Op.like]: `%${query}%` } },
                             { marque: { [Op.like]: `%${query}%` } }
                         ]
-                    }
+                    },
+                    required: false
                 }
             ]
         });
