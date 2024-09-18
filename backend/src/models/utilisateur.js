@@ -21,7 +21,7 @@ const Utilisateur = sequelize.define('Utilisateur', {
         allowNull: false
     },
     role: {
-        type: DataTypes.ENUM('Administrateur','Gestionnaire des produits', 'Gestionnaire des commandes'),
+        type: DataTypes.ENUM('Administrateur','Gestionnaire des produits', 'Gestionnaire des commandes', 'Livreur'),
         allowNull: false
     },
     adresse: {

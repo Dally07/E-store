@@ -3,11 +3,9 @@ const ConfigurationPC = require('../models/config_pc');
 const ConfigurationImprimante = require('../models/config_imprimante');
 const ConfigurationTelephone = require('../models/config_telephone');
 const ConfigurationAccessoire = require('../models/config_accessoire');
-
 const productService = require('../services/productService');
 const { envoyerNotificationProduits } = require('../utils/notificationUtil');
-
-
+const { Op } = require('sequelize');
 
 // cree un produit
 exports.createProduct = async (req, res) => {
@@ -20,6 +18,12 @@ exports.createProduct = async (req, res) => {
             couleursArray = couleurs_disponibles.split(',').map(couleur => couleur.trim());
         }
 
+        let statutStock = 'Disponible';
+        if (quantite_en_stock === 0) {
+            statutStock = 'Rupture de stock';
+        } else if (quantite_en_stock <= 10) {
+            statutStock = 'Stock critique';
+        }
         
         const newProduct = await Produit.create({
             nom,
@@ -29,7 +33,8 @@ exports.createProduct = async (req, res) => {
             categorie,
             reference,
             couleurs_disponibles:couleursArray,
-            photo1
+            photo1,
+            statutStock
         });
 
         // cree une configuration correspondante au categorie de produit
@@ -87,11 +92,19 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-
 // recuperer tout
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await productService.getAllProducts();
+        const quantite_en_stock = products.quantite_en_stock;
+
+        let statutStock = 'Disponible';
+        if (quantite_en_stock === 0) {
+            statutStock = 'Rupture de stock';
+        } else if (quantite_en_stock <= 10) {
+            statutStock = 'Stock critique';
+        }
+
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -102,6 +115,7 @@ exports.getAllProducts = async (req, res) => {
 exports.getProductById = async (req, res) => {
     try {
         const product = await Produit.findByPk(req.params.id, {
+            
             include: [
                 { model: ConfigurationPC, as: 'configPC' },
                 { model: ConfigurationImprimante, as: 'configImprimante' },
@@ -113,13 +127,20 @@ exports.getProductById = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
+        
+        const quantite_en_stock = product.quantite_en_stock;
+        
+        if (quantite_en_stock === 0) {
+            statutStock = 'Rupture de stock';
+        } else if (quantite_en_stock <= 10) {
+            statutStock = 'Stock critique';
+        }
 
         res.status(200).json(product);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 };
-
 
 // mettre a jour un produit
 exports.updateProduct = async (req, res) => {
@@ -139,6 +160,13 @@ exports.updateProduct = async (req, res) => {
             couleursArray = couleurs_disponibles.split(',').map(couleur => couleur.trim());
         }
 
+        let statutStock = 'Disponible';
+        if (quantite_en_stock === 0) {
+            statutStock = 'Rupture de stock';
+        } else if (quantite_en_stock <= 10) {
+            statutStock = 'Stock critique';
+        }
+
         const updatedProduct = await product.update({
             nom: nom || product.nom,
             description: description || product.description,
@@ -147,7 +175,8 @@ exports.updateProduct = async (req, res) => {
             categorie: categorie || product.categorie,
             reference: reference || product.reference,
             couleurs_disponibles: couleursArray || product.couleurs_disponibles,
-            photo1: photo1
+            photo1: photo1,
+            statutStock
         });
 
         // Mise à jour de la configuration en fonction de la catégorie
@@ -191,8 +220,6 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-
-
 exports.deleteProduct = async (req, res) => {
     try {
         await productService.deleteProduct(req.params.id);
@@ -204,3 +231,83 @@ exports.deleteProduct = async (req, res) => {
     const message = `Le produit "${Produit.nom}" a été supprimer.`;
     await envoyerNotificationProduits(message);
 };
+
+
+// Fonction pour le filtrage des produits
+exports.filtrerProduits = async (req, res) => {
+    const { nom, marque, startDate, endDate } = req.query;
+    const isNumeric = !isNaN(req.query); 
+
+    try {
+        // Filtrage par nom
+        let whereProduit = {};
+        if (nom) {
+            whereProduit.nom = { [Op.iLike]: `%${nom}%` };
+        }
+
+        // Filtrage par intervalle de dates
+        if (startDate && endDate) {
+            whereProduit.createdAt = { [Op.between]: [new Date(startDate), new Date(endDate)] };
+        } else if (startDate) {
+            whereProduit.createdAt = { [Op.gte]: new Date(startDate) };
+        } else if (endDate) {
+            whereProduit.createdAt = { [Op.lte]: new Date(endDate) };
+        }
+
+        // Rechercher les produits par nom ou date
+        const produits = await Produit.findAll({
+            where: whereProduit,
+            include: [
+                { model: Config_Pc, as: 'configPC' },
+                { model: Config_Telephone, as: 'configTelephone' },
+                { model: Config_Imprimante, as: 'configImprimante' },
+                { model: Config_Accessoire, as: 'configAccessoire' }
+            ]
+        });
+
+        // Filtrer par marque dans les configurations
+        let produitsParConfig = [];
+        if (marque && produits.length === 0) {
+            produitsParConfig = await Produit.findAll({
+                include: [
+                    { 
+                        model: Config_Pc, as: 'configPC',
+                        where: { marque: { [Op.iLike]: `%${marque}%` } },
+                        required: true
+                    },
+                    { 
+                        model: Config_Telephone, as: 'configTelephone',
+                        where: { marque: { [Op.iLike]: `%${marque}%` } },
+                        required: true
+                    },
+                    { 
+                        model: Config_Imprimante, as: 'configImprimante',
+                        where: { marque: { [Op.iLike]: `%${marque}%` } },
+                        required: true
+                    },
+                    { 
+                        model: Config_Accessoire, as: 'configAccessoire',
+                        where: { marque: { [Op.iLike]: `%${marque}%` } },
+                        required: true
+                    }
+                ]
+            });
+        }
+
+        // Retourner les résultats filtrés
+        return res.json({
+            produits: produits.length > 0 ? produits : produitsParConfig
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erreur lors du filtrage des produits.' });
+    }
+};
+
+
+
+
+
+

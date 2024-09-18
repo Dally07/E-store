@@ -21,5 +21,6 @@ router.get('/', authMiddleware, productController.getAllProducts);
 router.get('/:id', authMiddleware,  productController.getProductById);
 router.put('/:id', authMiddleware, requireRole('Gestionnaire des produits', 'Administrateur'),upload.single('photo1'), productController.updateProduct);
 router.delete('/:id', authMiddleware, requireRole('Gestionnaire des produits', 'Administrateur'), productController.deleteProduct);
+//router.get('/filter',authMiddleware, productController.filtrerProduits);
 
 module.exports = router;

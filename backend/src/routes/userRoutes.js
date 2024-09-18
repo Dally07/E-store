@@ -5,9 +5,8 @@ const { authMiddleware, requireRole } = require('../middlewares/authMiddleware')
 
 // Auth routes
 router.post('/login', userController.login);
-
-// Admin routes
 router.post('/register', userController.register);
+// Admin routes
 router.get('/', authMiddleware, requireRole('Administrateur'), userController.getAllUsers);
 router.get('/:id', authMiddleware, requireRole('Administrateur'), userController.getUserById);
 router.put('/:id', authMiddleware, requireRole('Administrateur'), userController.updateUser);

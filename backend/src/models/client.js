@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
+const Commande = require('./commande');
 
 const Client = sequelize.define('Client', {
     idCli: {
@@ -33,5 +34,7 @@ const Client = sequelize.define('Client', {
         allowNull: true
     }
 });
+
+
 
 module.exports = Client;

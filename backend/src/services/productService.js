@@ -93,13 +93,18 @@ exports.updateProduct = async (id, productData, configurationData, user) => {
 };
 
 exports.getAllProducts = async () => {
-    const products = await Produit.findAll();
+    const products = await Produit.findAll();  
+       
+            
+       
+
     return products;
 };
 
 exports.getProductById = async (id) => {
     const product = await Produit.findByPk(id);
-    if (!product) throw new Error('Produit non trouvé');
+
+    
     return product;
 };
 
@@ -110,3 +115,6 @@ exports.deleteProduct = async (id, user) => {
 
 
 };
+
+
+
