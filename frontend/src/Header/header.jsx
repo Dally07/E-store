@@ -4,7 +4,7 @@ import logo from '../assets/COMPUTER LOGO 1.png';
 
 const Header = ({ toggleSidebar }) => {
   return (
-    <header className="flex justify-between items-center p-4 bg-gray-800 text-white shadow" style={{backgroundColor: "#041122",
+    <header className="fixed top-0 left-0 w-full flex justify-between items-center p-4 text-white shadow-lg z-10 border-b-2 border-black" style={{backgroundColor: "#041122",
       boxShadow: "inset 50px rgba(0, 0, 0, 0.5)"
     }}>
       {/* logo et icon menu */ }
@@ -29,10 +29,13 @@ const Header = ({ toggleSidebar }) => {
         <FaSearch className="text-gray-400 mr-2" />
       </div>
 
-      <div className="flex items-center space-x-6">
-        <FaCalendarAlt className="cursor-pointer" />
-        <FaBell className="cursor-pointer" />
-        <FaUserCircle className="cursor-pointer" />
+      <div className="flex items-center space-x-2 ">
+        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaCalendarAlt className="cursor-pointer shadow-lg" /></div>
+        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaBell className="cursor-pointer" /></div>
+        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaUserCircle className="cursor-pointer" /></div>
+        
+        
+        
       </div>
 
     </header>

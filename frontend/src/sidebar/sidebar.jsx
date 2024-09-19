@@ -21,66 +21,67 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full text-white w-64 relative transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 md:translate-x-0`}>
+      <aside className={`fixed top-20 left-0 h-screen w-64 shadow-lg  text-white ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 md:translate-x-0`}>
         <nav className="p-4 h-full justify-between" style={{backgroundColor: "#041122"}}>
           <ul>
             <li className="mb-6">
-              <div className="flex justify-between cursor-pointer">
+              <div className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaTachometerAlt className="inline mr-3" /> Dashboard</span>
               </div>
             </li>
             <li className="mb-6">
-              <div onClick={() => setIsVentesOpen(!isVentesOpen)} className="flex justify-between cursor-pointer">
+              <div onClick={() => setIsVentesOpen(!isVentesOpen)} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaChartLine className="inline mr-3" /> Ventes</span>
                 <FaChevronDown />
               </div>
               {isVentesOpen && (
-                <ul className="ml-4 mt-2">
+                <ul className="ml-4 mt-2 cursor-pointer">
                   <li>Appareils</li>
                 </ul>
               )}
             </li>
             <li className="mb-6">
-              <div onClick={() => setIsInventaireOpen(!isInventaireOpen)} className="flex justify-between cursor-pointer">
+              <div onClick={() => setIsInventaireOpen(!isInventaireOpen)} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaBoxes className="inline mr-3" /> Inventaire</span>
                 <FaChevronDown />
               </div>
               {isInventaireOpen && (
-                <ul className="ml-4 mt-2">
+                <ul className="ml-4 mt-2 cursor-pointer">
                   <li>Appareils</li>
                 </ul>
               )}
             </li>
             <li className="mb-6">
-              <div className="flex justify-between cursor-pointer">
+              <div className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaLifeRing className="inline mr-3" /> Rapport</span>
               </div>
             </li>
             <li className="mb-6">
-              <div className="flex justify-between cursor-pointer">
+              <div className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaUser className="inline mr-3" /> Client</span>
               </div>
             </li>
             <li className="mb-6">
-              <div onClick={() => setIsParametreOpen(!isParametreOpen)} className="flex justify-between cursor-pointer">
+              <div onClick={() => setIsParametreOpen(!isParametreOpen)} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaCogs className="inline mr-3" /> Paramètres</span>
                 <FaChevronDown />
               </div>
               {isParametreOpen && (
                 <ul className="h-16 ml-4 mt-2 justify-center" style={{ backgroundColor: '#041122' }}>
-                  <li><span><FaDotCircle className="inline mr-3" size={10} /> Utilisateur</span></li>
-                  <li><span><FaDotCircle className="inline mr-3" size={10} /> Role</span></li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Utilisateur</span></li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Role</span></li>
                 </ul>
               )}
             </li>
           </ul>
           <ul>
-          <div onClick={() => setIsParametreOpen(!isParametreOpen)} className="flex justify-between cursor-pointer">
+          <div onClick={() => setIsParametreOpen(!isParametreOpen)} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
                 <span><FaSignOutAlt className="inline mr-3" /> Deconnection</span>
                 
-              </div>
+        </div>
           </ul>
         </nav>
+        
       </aside>
     </div>
   );
