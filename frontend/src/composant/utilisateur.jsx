@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../Header/header';
 import Sidebar from '../sidebar/sidebar';
-import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit, FaRecycle } from 'react-icons/fa';
+import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit,  FaTrash } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -13,6 +13,7 @@ const Utilisateur = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
+  const [selectedFile, setSelectedFile] =useState(null)
 
   const utilisateur = [
     {id: '1', nom:'maminomenjanahary', email: 'dallymaminomenjanahar@gmail.com', role: 'Administrateur'},
@@ -61,6 +62,22 @@ const Utilisateur = () => {
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, 'Users_Report.xlsx');
   };
+
+
+  //image
+
+const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) {
+            alert('veuillez choisir une imae au format JPG, JPEG ou PNG');
+            return;
+        }
+        console.log('fichier selectioner:', file.name);
+
+        setSelectedFile(file)
+    }
+}
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: '#030C1B' }}>
@@ -164,7 +181,7 @@ const Utilisateur = () => {
                     
                     <td className=" flex py-2 px-4">
                       <FaEdit className="cursor-pointer text-green-500" />
-                      <FaRecycle className='cursor-pointer text-red-800 ml-2'/>
+                      <FaTrash className='cursor-pointer text-red-800 ml-2'/>
                     </td>
                   </tr>
                 ))}
@@ -214,10 +231,41 @@ const Utilisateur = () => {
                   </div>
 
                   <div className="flex mt-4 justify-between">
+
+                  <div className="mt-4">
+                            <label className="text-white">Ajouter une photo</label>
+                                    {/* Input de fichier masqué */}
+                                        <input 
+                                        type="file" 
+                                        accept=".jpg, .jpeg, .png" 
+                                        onChange={handleImageChange} 
+                                        className="hidden" 
+                                        id="imageUpload"  // ID pour relier au bouton simulé
+                                        />
+
+                                    {/* Zone cliquable pour simuler l'input de fichier */}
+                                    <label 
+                                            htmlFor="imageUpload" 
+                                            className="w-32 h-32 border-2 border-dashed border-gray-500 flex items-center justify-center cursor-pointer"
+                                    >
+                                    {/* Si un fichier est sélectionné, affichez l'aperçu de l'image */}
+                                    {selectedFile ? (
+                                        <img 
+                                            src={URL.createObjectURL(selectedFile)} 
+                                            alt="Aperçu de l'image" 
+                                            className="w-32 h-32 cover rouunded"
+                                        />
+                                    ) : (
+                                <span className="text-white text-center text-sm">image au format jpg, png, jpeg</span>
+                                        )}
+                            </label>
+                        </div>
+                                        <div>
+                                            <button className="mt-12 bg-red-600 px-8 py-2 rounded text-white">Enregistrer</button>
+                                        </div>
                     
-                    <input type="image" alt='image' className="w-20 h-20 p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
-                    <button className="mt-10 bg-red-600 px-4 py-2 rounded text-white">Enregistrer</button>
-                  </div>
+                            
+                        </div>
                  
                 </form>
               </div>
