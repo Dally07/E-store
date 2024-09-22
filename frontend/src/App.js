@@ -4,6 +4,8 @@ import './App.css';
 import Loginpage from "./LoginPage"
 import Dashboard from './composant/dashboard';
 import Products from './composant/product';
+import Commande from './composant/commande';
+import Utilisateur from './composant/utilisateur';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/login" element={<Loginpage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/products" element={<Products/>} />
+        <Route path="/commande" element={<Commande/>} />
+        <Route path="/utilisateur" element={<Utilisateur/>} />
 
 
         
