@@ -267,12 +267,12 @@ const Products = () => {
               <tbody className="text-white md-6">
                 {currentProducts.map((product, index) => (
                   <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-10">{product.reference}</td>
-                    <td className="py-2 px-6">
+                    <td className="py-2 px-4">{product.reference}</td>
+                    <td className="py-2 px-4">
                       {product.name} <br />
                       <span className="text-sm text-gray-500">{product.category}</span>
                     </td>
-                    <td className="py-2 px-10 flex items-center">
+                    <td className="py-2 px-4 flex items-center">
                       <img src={product.image} alt={product.name} className="h-12 w-12 mr-2 items-center" />
                       <div>
                         <p>{product.price}</p>
