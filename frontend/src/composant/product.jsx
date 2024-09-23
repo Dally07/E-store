@@ -4,6 +4,7 @@ import Sidebar from '../sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEye, FaFilter } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
+import { useNavigate } from 'react-router-dom';
 import Asus from '../assets/asus expertbook.webp';
 
 const Products = () => {
@@ -14,6 +15,8 @@ const Products = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
+  const [reference, setReference] = useState('');
+  const navigate = useNavigate();
 
   const products = [
    { reference: 'X256', name: 'Asus ExpertBook', category: 'PC', quantity: 5, price: '1.250.000 MGA', status: 'disponible', image: `${Asus}`, configuration: 'Intel® Core™ i5 8th Gen', ram: '8GB', rom: '256GB SSD' },
@@ -138,6 +141,15 @@ const Products = () => {
     { reference: 'X354', name: 'HP Pavilion', category: 'PC', quantity: 18, price: '1.800.000 MGA', status: 'disponible', image: 'link-to-image', configuration: 'Intel® Core™ i5 10th Gen', ram: '8GB', rom: '512GB SSD' },
     { reference: 'X412', name: 'Asus ROG Strix', category: 'PC', quantity: 5, price: '3.800.000 MGA', status: 'disponible', image: 'link-to-image', configuration: 'Intel® Core™ i7 9th Gen', ram: '16GB', rom: '1TB SSD' },
    ];
+
+   const handleCreateProduct = () => {
+    navigate('/creerProduit', {
+      state: {
+        reference, 
+        category: selectedCategory
+      }
+    });
+  };
 
  
 
@@ -328,7 +340,8 @@ const Products = () => {
                 <form>
                   <div>
                     <label className="text-white">Catégories</label>
-                    <select className="w-full p-2 rounded bg-gray-700 text-white">
+                    <select className="w-full p-2 rounded bg-gray-700 text-white" value={selectedCategory}
+                                                      onChange={(e) => setSelectedCategory(e.target.value)}>
                       <option>PC</option>
                       <option>Accessoires</option>
                       <option>Imprimante</option>
@@ -337,9 +350,11 @@ const Products = () => {
                   </div>
                   <div className="mt-4">
                     <label className="text-white">Référence</label>
-                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white" />
+                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white"    value={reference}
+                    onChange={(e) => setReference(e.target.value)} 
+                    />
                   </div>
-                  <button className="mt-4 bg-red-600 px-4 py-2 rounded text-white">Enregistrer</button>
+                  <button className="mt-4 bg-red-600 px-4 py-2 rounded text-white" onClick={handleCreateProduct}>Enregistrer</button>
                 </form>
               </div>
             </div>
