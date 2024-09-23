@@ -9,6 +9,9 @@ import Utilisateur from './composant/utilisateur';
 import Facture from './composant/facture';
 import CreateProduct from './composant/creerProduit';
 import InfoCommande from './composant/infoCommande';
+import InfoFacture from './composant/infoFacture';
+import InfoLivraison from './composant/infoLivraison';
+import Client from './composant/client';
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
         <Route path="/facture" element={<Facture/>} />
         <Route path="/creerProduit" element={<CreateProduct/>} />
         <Route path="/infoCommande" element={<InfoCommande/>} />
+        <Route path="/infoFacture" element={<InfoFacture/>} />
+        <Route path="/infoLivraison" element={<InfoLivraison/>} />
+        <Route path="/client" element={<Client/>} />
 
 
         
