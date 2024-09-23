@@ -8,6 +8,7 @@ import Commande from './composant/commande';
 import Utilisateur from './composant/utilisateur';
 import Facture from './composant/facture';
 import CreateProduct from './composant/creerProduit';
+import InfoCommande from './composant/infoCommande';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/utilisateur" element={<Utilisateur/>} />
         <Route path="/facture" element={<Facture/>} />
         <Route path="/creerProduit" element={<CreateProduct/>} />
+        <Route path="/infoCommande" element={<InfoCommande/>} />
 
 
         
@@ -32,3 +34,4 @@ function App() {
 }
 
 export default App;
+
