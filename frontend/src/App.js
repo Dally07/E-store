@@ -6,6 +6,8 @@ import Dashboard from './composant/dashboard';
 import Products from './composant/product';
 import Commande from './composant/commande';
 import Utilisateur from './composant/utilisateur';
+import Facture from './composant/facture';
+import CreateProduct from './composant/creerProduit';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/products" element={<Products/>} />
         <Route path="/commande" element={<Commande/>} />
         <Route path="/utilisateur" element={<Utilisateur/>} />
+        <Route path="/facture" element={<Facture/>} />
+        <Route path="/creerProduit" element={<CreateProduct/>} />
 
 
         

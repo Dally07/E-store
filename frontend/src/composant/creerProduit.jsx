@@ -116,6 +116,7 @@ const CreateProduct = () => {
                             </label>
 
                 </div>
+
               </div>
 
               <div>
