@@ -9,7 +9,8 @@ const productRoutes = require('./routes/productRoutes');
 const commandeRoutes = require('./routes/commandeRoutes');
 const livraisonRoutes = require('./routes/livraisonRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-const dashbordRoutes = require('./routes/routesDashboard')
+const dashbordRoutes = require('./routes/routesDashboard');
+const rapportRoutes = require('./routes/rapportRoutes');
 const bodyParser = require('body-parser');
 
 app.use(cors());
@@ -24,6 +25,7 @@ app.use('/api/commande', commandeRoutes);
 app.use('/api/livraison', livraisonRoutes);
 app.use('/api/recherche', searchRoutes);
 app.use('/api/stat', dashbordRoutes);
+app.use('/api', rapportRoutes);
 
 app.get('/', (req, res) => {
     res.send('Bonjour! API est en marche...');

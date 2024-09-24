@@ -43,11 +43,11 @@ exports.getVisitorByDay = async (req, res) => {
     try {
         const VisitorByDay = await Client.findAll({
             attributes: [
-                [Sequelize.fn('DATE_TRUNC', 'day', Sequelize.col('createdAt')), 'jour'],
+                [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'mois'],
                 [Sequelize.fn('COUNT', Sequelize.col('idCli')), 'totalVisiteurs']
             ],
-            group:['jour'],
-            order: [['jour', 'ASC']]
+            group:['mois'],
+            order: [['mois', 'ASC']]
         });
 
         res.status(200).json(VisitorByDay);
