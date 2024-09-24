@@ -36,7 +36,9 @@ const Sidebar = () => {
               </div>
               {isVentesOpen && (
                 <ul className="ml-4 mt-2 cursor-pointer">
-                  <li>Appareils</li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Commande</span></li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Expedition</span></li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Facture</span></li>
                 </ul>
               )}
             </li>
@@ -47,7 +49,8 @@ const Sidebar = () => {
               </div>
               {isInventaireOpen && (
                 <ul className="ml-4 mt-2 cursor-pointer">
-                  <li>Appareils</li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Produits</span></li>
+          
                 </ul>
               )}
             </li>
@@ -69,7 +72,7 @@ const Sidebar = () => {
               {isParametreOpen && (
                 <ul className="h-16 ml-4 mt-2 justify-center" style={{ backgroundColor: '#041122' }}>
                   <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Utilisateur</span></li>
-                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Role</span></li>
+                  <li className='cursor-pointer'><span><FaDotCircle className="inline mr-3 cursor-pointer" size={10} /> Importer</span></li>
                 </ul>
               )}
             </li>
