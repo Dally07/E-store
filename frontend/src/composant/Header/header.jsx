@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaBars, FaBell, FaCalendarAlt, FaSearch, FaUserCircle } from 'react-icons/fa';
-import logo from '../assets/COMPUTER LOGO 1.png';
+import logo from '../../assets/COMPUTER LOGO 1.png';
 
 const Header = ({ toggleSidebar }) => {
   return (

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Header from '../Header/header';
-import Sidebar from '../sidebar/sidebar';
+import Header from '../composant/Header/header';
+import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileInvoice, FaTimes, FaTruck } from 'react-icons/fa';
 
 const InfoCommande = () => {
-  const [showModal, setShowModal] = useState(false); // État pour afficher/masquer la modal
+  const [showModal, setShowModal] = useState(false); // État pour afficher/masquer la modal de la livraison
+  const [showFactModal, setShowFactModal] = useState(false); // État pour afficher/masquer la modal de la facture
   const [livreur, setLivreur] = useState({ nom: '', voiture: '' }); // État pour les infos du livreur
   const [deliveryDate, setDeliveryDate] = useState(''); // Date de livraison
   const [arrivalDate, setArrivalDate] = useState(''); // Date d'arrivée
@@ -42,8 +43,13 @@ const InfoCommande = () => {
     setShowModal(true); // Afficher la modal lorsqu'on clique sur "Livrer"
   };
 
+  const handleFactClick = () => {
+    setShowFactModal(true); // Afficher la modal lorsqu'on clique sur "Livrer"
+  };
+
   const closeModal = () => {
-    setShowModal(false); // Fermer la modal
+    setShowModal(false);
+    setShowFactModal(false) // Fermer la modal
   };
 
     // Gérer le changement de la date de livraison et mettre à jour le statut
@@ -71,8 +77,13 @@ const InfoCommande = () => {
       // Logique pour envoyer ou valider les données de livraison
       
       setCommandeStatus('Livrée');
-      setShowModal(false); // Fermer le modal après validation
+      setShowModal(false);
+       // Fermer le modal après validation
     };
+
+    const createFact = () => {
+      setShowFactModal(false);
+    }
 
 
   return (
@@ -108,7 +119,9 @@ const InfoCommande = () => {
                 >
                   <FaTruck className='items-center'/> <span className='ml-2'>Livrer</span>
                 </button>
-                <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg" style={{backgroundColor: "#041122"}}>
+                <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg"
+                onClick={handleFactClick}
+                 style={{backgroundColor: "#041122"}}>
                   <FaFileInvoice className='items-center'/><span className='ml-2'>Facture</span> 
                 </button>
                 <button className="flex items-center px-4 py-2 text-white rounded-lg" style={{backgroundColor: "#041122"}}>
@@ -215,6 +228,48 @@ const InfoCommande = () => {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* Modal */}
+            {showFactModal && (
+              <div className="fixed overflow-y-auto  top-0 right-0 w-1/3 h-full bg-gray-900 p-6 z-50 transition-transform duration-300 ease-in-out transform translate-x-0">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-white">Informations sur la facture</h3>
+                   {/* Bouton de validation */}
+                <button 
+                  onClick={createFact} 
+                  className="bg-blue-600 text-white py-2 rounded-lg mt-4 px-4"
+                >
+                  cree une facture
+                </button>
+                  <button onClick={closeModal} className="text-white text-2xl">
+                    &times;
+                  </button>
+                </div>
+                  
+
+                  <div className="mt-6">
+                    <h4 className="font-bold mb-2">Produit commandé</h4>
+                    <div className='flex bg-gray-800 mb-6'>
+                      <div className='p-4'>
+                      <img src="/path-to-image" alt="product" className="w-20 h-20 object-cover mr-4" />
+                    </div>
+                      
+                    <div className=" p-4 rounded-lg">
+                      <p><span className="font-bold">Nom : </span>{commande.produit.nom}</p>
+                      <p><span className="font-bold">Référence : </span>{commande.produit.reference}</p>
+                      <p><span className="font-bold">Description : </span>{commande.produit.description}</p>
+                    </div>
+                    
+                    </div>
+                    <div className='flex justify-between'>
+                    <p className='flex items-center'><span className="font-bold">Quantité : </span><p className='ml-2 px-3 border-2 border-gray'>{commande.produit.quantite}</p></p>
+                    <p><span className="font-bold ">Prix : </span>{commande.produit.prix}</p>
+                    </div>
+                    
+                  </div>
+              </div>
+              
             )}
 
             {/* Reste du contenu */}

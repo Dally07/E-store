@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '../Header/header';
-import Sidebar from '../sidebar/sidebar';
+import Header from '../composant/Header/header';
+import Sidebar from '../composant/sidebar/sidebar';
 
 const CreateProduct = () => {
   const [isTouchScreen, setIsTouchScreen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '../Header/header';
-import Sidebar from '../sidebar/sidebar';
+import Header from '../composant/Header/header';
+import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEye, FaFilter } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';

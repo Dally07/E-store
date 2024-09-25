@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Header from '../Header/header';
-import Sidebar from '../sidebar/sidebar';
-import { Line, Bar} from 'react-chartjs-2';
+import Header from '../composant/Header/header';
+import Sidebar from '../composant/sidebar/sidebar';
+import { Line, Bar, Doughnut} from 'react-chartjs-2';
 import { Chart as chartjs, CategoryScale, LinearScale, BarElement, LineElement, Title, Tooltip, Legend, PointElement } from 'chart.js';
 import { FaChartLine,  FaEye, FaShoppingCart, FaUser } from 'react-icons/fa';
 
@@ -18,15 +18,39 @@ const Dashboard = () => {
     labels: ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
     datasets: [
       {
-        label: 'Vente',
-        data: [30,45,60,40,80,60,75,55,100,70,95,50],
-        borderColor: 'rgba(255, 0, 13, 1)',
-        backgroundColor: 'rgba(250, 0, 0, 1)',
-        fill: true,
-        tension: 0.4,
-    },
-  ],
+        label: 'Analyse des ventes cette année',
+        data: [30, 45, 60, 40, 80, 60, 75, 55, 100, 70, 95, 50],
+        borderColor: 'rgba(255, 0, 23, 1)',  // Bordure rouge vif
+        backgroundColor: 'rgba(255, 0, 23, 0.5)',  // Rouge avec transparence
+        fill: true,  // Remplissage sous la ligne
+        tension: 0.4,  // Pour une courbe lisse
+      },
+    ],
   };
+
+  // Options du graphique pour le design et l'apparence
+  const options = {
+    scales: {
+      x: {
+        ticks: { color: '#fff' }, // Couleur des labels (mois) en blanc
+        grid: { display: false }, // Désactivation des lignes de la grille pour l'axe x
+      },
+      y: {
+        ticks: { color: '#fff' }, // Couleur des valeurs de l'axe y en blanc
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)', // Lignes de la grille y en blanc légèrement visible
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#fff', // Couleur des labels de la légende en blanc
+        },
+      },
+    },
+  };
+
 
   const clientsData = {
     labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'],
@@ -40,6 +64,38 @@ const Dashboard = () => {
     ],
   };
 
+
+
+  
+  const topCategories = [
+    { category: 'PC', sales: 400 },
+    { category: 'Phone', sales: 300 },
+    { category: 'Printer', sales: 200 },
+    { category: 'Accessory', sales: 100 },
+  ];
+  
+  const recurrentCustomers = { recurrent: 70, new: 30 };
+  
+  const recentOrders = [
+    { orderId: 1, customer: 'John Doe', total: 150 },
+    { orderId: 2, customer: 'Jane Smith', total: 200 },
+    { orderId: 3, customer: 'Alice Johnson', total: 250 },
+    { orderId: 4, customer: 'Bob Brown', total: 300 },
+    { orderId: 5, customer: 'Bob Brown', total: 300 },
+    { orderId: 6, customer: 'Bob Brown', total: 300 },
+    { orderId: 7, customer: 'Bob Brown', total: 300 },
+  ];
+
+  const data = {
+    labels: topCategories.map((category) => category.category),
+    datasets: [
+      {
+        label: 'Sales by Category',
+        data: topCategories.map((category) => category.sales),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+      },
+    ],
+  };
 
     return (
       <div className="h-screen flex flex-col" style={{backgroundColor: "#030C1B"}}>
@@ -111,7 +167,7 @@ const Dashboard = () => {
                 <h3 className="text-xl font-semibold mb-4">Analyse des ventes</h3>
                 <h6 className=" font-semibold mb-4 cursor-pointer p-1 shadow-lg">Cette annee</h6>
                 </div>
-                    <Line data={salesData} />
+                    <Line data={salesData} options={options} />
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-md" style={{backgroundColor: "#041122"}}>
                 <div className='flex justify-between text-white'>
@@ -122,11 +178,54 @@ const Dashboard = () => {
                 </div>
             </div>
 
+7
+      
+
+      {/* Top Product Categories */}
+      <div className="flex justify-between mb-6 text-white items-stretch">
+  {/* Section for Recent Orders and Customers Analysis */}
+  <div className="w-2/3 mb-4 bg-gray-800 p-4 rounded-md h-full" style={{backgroundColor: "#041122"}}>
+    <h2 className="text-xl font-bold mb-4">Recent Orders</h2>
+    <table className="min-w-full">
+      <thead>
+        <tr>
+          <th className="py-2 px-4 border-b">Order ID</th>
+          <th className="py-2 px-4 border-b">Customer</th>
+          <th className="py-2 px-4 border-b">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {recentOrders.map((order) => (
+          <tr key={order.orderId} className="hover:bg-gray-100">
+            <td className="py-2 px-4 border-b">{order.orderId}</td>
+            <td className="py-2 px-4 border-b">{order.customer}</td>
+            <td className="py-2 px-4 border-b">{order.total} MGA</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Section for Doughnut Chart */}
+  <div className="w-1/3 ml-12 bg-gray-800 p-6 rounded-md h-full flex flex-col justify-center"style={{backgroundColor: "#041122"}}>
+    <h2 className="text-xl font-bold mb-4">Top Categories</h2>
+    <div className="h-auto flex items-center justify-center">
+      <Doughnut data={data} />
+    </div>
+  </div>
+</div>
+
+
+      
+
+      {/* Recent Orders */}
+      
+
 
             <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-white text-white p-4 rounded-md" style={{backgroundColor: "#041122"}}>
             <div className='flex justify-between'>
-              <div><h3 className="text-xl font-semibold mb-4">Stock en Critique</h3></div>
+              <div><h3 className="text-xl font-semibold mb-4">Commande recente</h3></div>
               <div className='p-2 rounded-lg font-semibold cursor-pointer'style={{backgroundColor: "#030C1B"}}><h6>Voir tout</h6></div>    
             </div>
               <table className="w-full text-left text-gray">
@@ -159,18 +258,35 @@ const Dashboard = () => {
                 <h3 className="text-xl font-semibold mb-4">Stock en Critique</h3>
                 <h6 className=" font-semibold mb-4 cursor-pointer">Voir tout</h6>
                 </div>
-                <div className='flex '></div>
+                <div className='flex w-full border-2 border-black-900 rounded-lg justify-between '>
+                      <div className='p-4'>
+                      <img src="/path-to-image" alt="product" className="w-20 h-20 object-cover mr-4" />
+                    </div>
+                      
+                    <div className=" p-4 rounded-lg">
+                      <p><span className="font-bold"></span>Asus ROG</p>
+                      <p><span className="font-bold"></span>AS-214</p>
+                      <p><span className="font-bold"></span>Intel® Core™ i5 8th Gen</p>
+                      <p><span className="font-bold"></span>8GB/256GB SSD</p>
+                    </div>
+
+                    <div className=" p-4 text-center text-2xl rounded-lg">
+                      <p className='text-2xl text-center'><span className="font-bold text-center text-red-700 text-2xl">5</span></p>
+                    </div>
+
+                </div>
+            </div>
               
               
-            </div>
-            </div>
+    </div>
+    </div>
             {/* Commandes récentes */}
             
 
 
           </div>
         </div>
-      </div>
+      
     );
   };
   

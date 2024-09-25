@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Header from '../Header/header';
-import Sidebar from '../sidebar/sidebar';
+import Header from '../composant/Header/header';
+import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit,  FaTrash } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
 
-const Client = () => {
+const Utilisateur = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,8 +16,8 @@ const Client = () => {
   const [selectedFile, setSelectedFile] =useState(null)
 
   const utilisateur = [
-    {id: '1', nom:'maminomenjanahary', email: 'dallymaminomenjanahar@gmail.com', adresse: 'Ambodirano, Fianarantsoa', tel: '0342584578'},
-    {id: '2', nom:'maminiaina', email: 'maminomenjanahar@gmail.com', adresse: 'Ambodirano, Fianarantsoa', tel: '0342574578'},
+    {id: '1', nom:'maminomenjanahary', email: 'dallymaminomenjanahar@gmail.com', role: 'Administrateur'},
+    {id: '2', nom:'maminiaina', email: 'maminomenjanahar@gmail.com', role: 'Gestionnaire des produits'},
 
 ];
 
@@ -28,12 +28,17 @@ const Client = () => {
   // Fonction pour filtrer les produits selon le terme de recherche
   const filteredUsers = utilisateur.filter(utilisateur => {
     const categoryMatch = selectedCategory ? utilisateur.statut === selectedCategory : true;
+    const quantityMatch = selectedQuantity ? 
+      (selectedQuantity === "Administrateur" ? utilisateur.statut === 'Administrateur' :
+       selectedQuantity === "Gestionnaire des commandes" ? utilisateur.statut === 'Gestionnaire des commandes' :
+       selectedQuantity === "Gestionnaire des produits" ? utilisateur.statut === 'Gestionnaire des produits' : true) 
+      : true;
 
       const searchMatch = searchTerm ? 
-      utilisateur.adresse.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      utilisateur.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
       utilisateur.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
       utilisateur.email.toLowerCase().includes(searchTerm.toLowerCase()) : true;
-    return categoryMatch  && searchMatch;
+    return categoryMatch && quantityMatch && searchMatch;
   });
 
   
@@ -55,7 +60,7 @@ const Client = () => {
     utils.book_append_sheet(wb, ws, 'commande');
     const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, 'Clients_Report.xlsx');
+    saveAs(blob, 'Users_Report.xlsx');
   };
 
 
@@ -82,7 +87,7 @@ const handleImageChange = (e) => {
         <div className="flex-1 overflow-y-auto p-6 pt-20 pl-64 ml-6 mb-6" style={{ backgroundColor: '#030C1B' }}>
           <div className="p-4 mb-6">
             <div className="flex justify-between mb-6 text-white">
-              <h2 className="text-2xl font-bold mb-2">Liste des Clients</h2>
+              <h2 className="text-2xl font-bold mb-2">Liste des Utilisateur</h2>
               <div className="flex items-center">
                 <button onClick={exportExcel} className="flex items-center px-4 py-2 ml-2 text-white rounded-lg">
                   <FaFileExport />
@@ -92,7 +97,7 @@ const handleImageChange = (e) => {
                   
                 <button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
                   <FaPlus />
-                  <p className="ml-2">Créer un Client</p>
+                  <p className="ml-2">Créer un Utilisateur</p>
                 </button>
               </div>
             </div>
@@ -153,8 +158,7 @@ const handleImageChange = (e) => {
                 <th className="py-2 px-4  ">ID</th>
                   <th className="py-2 px-4 ">Nom</th>
                   <th className="py-2 px-4 ">Email</th>
-                  <th className="py-2 px-4 ">Adresse</th>
-                  <th className="py-2 px-4 ">Tel</th>
+                  <th className="py-2 px-4 ">Role</th>
                   <th className="py-2 px-4 ">Action</th>
                 </tr>
               </thead>
@@ -172,10 +176,7 @@ const handleImageChange = (e) => {
                       
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.adresse}</span>
-                    </td>
-                    <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.tel}</span>
+                      <span className="text-sm text-gray-500">{utilisateur.role}</span>
                     </td>
                     
                     <td className=" flex py-2 px-4">
@@ -193,7 +194,7 @@ const handleImageChange = (e) => {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
               <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
                 <div className='flex justify-between mb-6'>
-                  <h2 className="text-white">Créer un Client</h2>
+                  <h2 className="text-white">Créer un utilisateur</h2>
                   <button onClick={() => setIsModalOpen(false)} className="text-white">
                     <FaWindowClose />
                   </button>
@@ -210,13 +211,13 @@ const handleImageChange = (e) => {
                     <label className="text-white">Email</label>
                     <input type="email" className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
                   </div>
-                  <div className="mt-4">
-                    <label className="text-white">Adresse</label>
-                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
-                  </div>
-                  <div className="mt-4">
-                    <label className="text-white">Telephone</label>
-                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
+
+                    <label className="text-white">Roles</label>
+                    <select className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }}>
+                      <option>Administrateur</option>
+                      <option>Gestionnaire des commandes</option>
+                      <option>Gestionnaire des produits</option>
+                    </select>
                   </div>
                   <div className='flex'>
                   <div className="mt-4">
@@ -226,7 +227,6 @@ const handleImageChange = (e) => {
                   <div className="mt-4 ml-4">
                     <label className="text-white">Confirmer le mot de passe</label>
                     <input type="password" className="w-full p-2 rounded bg-gray-700 text-white"  style={{ backgroundColor: '#041122' }}/>
-                  </div>
                   </div>
                   </div>
 
@@ -326,4 +326,4 @@ const handleImageChange = (e) => {
   );
 };
 
-export default Client;
+export default Utilisateur;
