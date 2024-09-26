@@ -1,0 +1,21 @@
+type Utilisateur {
+  idUtilisateur: Int!
+  nom: String!
+  email: String!
+  role: String!
+  adresse: String
+  token: String
+}
+
+type Query {
+  getAllUsers: [Utilisateur]
+  getUserById(id: Int!): Utilisateur
+  getProtectedData: String!
+}
+
+type Mutation {
+  registerUser(nom: String!, email: String!, mot_de_passe: String!, adresse: String!, role: String!): Utilisateur
+  loginUser(email: String!, mot_de_passe: String!): Utilisateur
+  updateUser(id: Int!, nom: String, email: String, adresse: String, role: String): Utilisateur
+  deleteUser(id: Int!): String
+}

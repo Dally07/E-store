@@ -27,6 +27,9 @@ app.use('/api/recherche', searchRoutes);
 app.use('/api/stat', dashbordRoutes);
 app.use('/api', rapportRoutes);
 
+
+
+
 app.get('/', (req, res) => {
     res.send('Bonjour! API est en marche...');
 });
