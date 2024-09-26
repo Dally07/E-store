@@ -5,6 +5,16 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex justify-center items-center" >
       <div className="w-[1000px] h-[700px] rounded-lg shadow-lg p-10 flex flex-col md:flex-row justify-between items-center md:space-x-20" style={{backgroundColor: "#08142A"}}>
+        {/* Logo */}
+        <div className="flex justify-between items-start h-72 w-72 ml-16">
+          <img
+            src={logo}
+            alt="Computer Store"
+            className=" h-full w-full object-containt"
+            
+          />
+        </div>
+        
         {/* Texte d'accueil */}
         <div className="justify-between items-center mb-6 md:mb-0 space-y-20 ">
           <h1 className="text-white text-4xl mb-6">BONJOUR A VOUS !</h1>
@@ -44,15 +54,7 @@ const LoginPage = () => {
           
         </div>
 
-        {/* Logo */}
-        <div className="flex justify-between items-start h-72 w-72 ml-16">
-          <img
-            src={logo}
-            alt="Computer Store"
-            className=" h-full w-full object-containt"
-            
-          />
-        </div>
+        
       </div>
     </div>
   );
