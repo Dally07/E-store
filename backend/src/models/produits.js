@@ -30,6 +30,10 @@ const Produit = sequelize.define('Produit', {
     couleurs_disponibles: {
         type: DataTypes.ARRAY(DataTypes.STRING(50))
     },
+    processeur: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     reference: {
         type: DataTypes.STRING(100),
         allowNull: true

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
+import axios from 'axios';
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit,  FaTrash } from 'react-icons/fa';
@@ -12,34 +13,150 @@ const Utilisateur = () => {
   const [usersParPage, setusersPerPage] = useState(10);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedQuantity, setSelectedQuantity] = useState('');
-  const [selectedFile, setSelectedFile] =useState(null)
-
-  const utilisateur = [
-    {id: '1', nom:'maminomenjanahary', email: 'dallymaminomenjanahar@gmail.com', role: 'Administrateur'},
-    {id: '2', nom:'maminiaina', email: 'maminomenjanahar@gmail.com', role: 'Gestionnaire des produits'},
-
-];
-
- 
-
+  const [selectedNameSort, setSelectedNameSort] = useState('');
+  const [selectedIdSort, setSelectedIdSort] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formData, setFormData] = useState({
+    nom: '',
+    email: '',
+    adresse: '',
+    role: '',
+    mot_de_passe: '',
+    confirmationMotDePasse: ''
+  });
+  const [message, setMessage] = useState('');
 
   
-  // Fonction pour filtrer les produits selon le terme de recherche
-  const filteredUsers = utilisateur.filter(utilisateur => {
-    const categoryMatch = selectedCategory ? utilisateur.statut === selectedCategory : true;
-    const quantityMatch = selectedQuantity ? 
-      (selectedQuantity === "Administrateur" ? utilisateur.statut === 'Administrateur' :
-       selectedQuantity === "Gestionnaire des commandes" ? utilisateur.statut === 'Gestionnaire des commandes' :
-       selectedQuantity === "Gestionnaire des produits" ? utilisateur.statut === 'Gestionnaire des produits' : true) 
-      : true;
 
-      const searchMatch = searchTerm ? 
-      utilisateur.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      utilisateur.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      utilisateur.email.toLowerCase().includes(searchTerm.toLowerCase()) : true;
-    return categoryMatch && quantityMatch && searchMatch;
-  });
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:3001/api/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des utilisateurs:", error);
+    }
+  };
+
+
+
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    };
+
+     const handleEdit = (user) => {
+    setFormData({
+      nom: user.nom,
+      email: user.email,
+      adresse: user.adresse,
+      role: user.role,
+      mot_de_passe: '',
+      confirmationMotDePasse: ''
+    });
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+
+    const handleDelete = async (idUtilisateur) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:3001/api/users/${idUtilisateur}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        setUsers(users.filter(user => user.idUtilisateur !== idUtilisateur));
+        setMessage("Utilisateur supprimé avec succès.");
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      }
+    }
+  };
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+    if (selectedFile) data.append('photo', selectedFile);
+
+    try {
+      const token = localStorage.getItem('token');
+      let response;
+      if (selectedUser) {
+        response = await axios.put(`http://localhost:3001/api/users/${selectedUser.idUtilisateur}`, data, {
+          headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
+        });
+        setMessage("Utilisateur mis à jour avec succès.");
+      } else {
+        response = await axios.post('http://localhost:3001/api/users/register', data, {
+          headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
+        });
+        setMessage("Utilisateur créé avec succès.");
+      }
+      fetchUsers();
+      setIsModalOpen(false);
+      setFormData({
+        nom: '',
+        email: '',
+        adresse: '',
+        role: '',
+        mot_de_passe: '',
+        confirmationMotDePasse: ''
+      });
+    } catch (error) {
+      console.error('Erreur lors de la soumission des données:', error.response ? error.response.data.message : error.message);
+    }
+  };
+
+  // Fonction pour filtrer et trier les utilisateurs
+const filteredUsers = users
+.filter((user) => {
+  // Filtrer par rôle
+  const categoryMatch = selectedCategory ? user.statut === selectedCategory : true;
+
+  // recherche
+  const searchMatch = searchTerm ? 
+      user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+  return categoryMatch && searchMatch;
+})
+.sort((a, b) => {
+  // Logique de tri par nom
+  if (selectedNameSort) {
+    if (selectedNameSort === "name_asc") {
+      return a.nom.localeCompare(b.nom);
+    }else if (selectedNameSort === "name_desc") {
+      return b.nom.localeCompare(a.nom);
+    }
+  } 
+
+  // Logique de tri par ID
+  if (selectedIdSort) {
+    if (selectedIdSort === "id_asc"){
+      return a.id - b.id;
+    }else if (selectedIdSort === "id_desc") {
+      return b.id - a.id;
+    }
+  } 
+
+  return 0; // Pas de tri si aucun tri sélectionné
+});
 
   
 
@@ -55,7 +172,7 @@ const Utilisateur = () => {
 
   // Fonction pour exporter en fichier Excel
   const exportExcel = () => {
-    const ws = utils.json_to_sheet(utilisateur);
+    const ws = utils.json_to_sheet(users);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'commande');
     const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' });
@@ -64,26 +181,11 @@ const Utilisateur = () => {
   };
 
 
-  //image
-
-const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) {
-            alert('veuillez choisir une imae au format JPG, JPEG ou PNG');
-            return;
-        }
-        console.log('fichier selectioner:', file.name);
-
-        setSelectedFile(file)
-    }
-}
-
   return (
-    <div className="h-screen flex flex-col" style={{ backgroundColor: '#030C1B' }}>
+    <div className="h-screen flex flex-col" style={{ backgroundColor: '#030C1B' }}> 
       <Header />
       <div className="flex">
-        <Sidebar />
+        <Sidebar/>
         <div className="flex-1 overflow-y-auto p-6 pt-20 pl-64 ml-6 mb-6" style={{ backgroundColor: '#030C1B' }}>
           <div className="p-4 mb-6">
             <div className="flex justify-between mb-6 text-white">
@@ -95,7 +197,7 @@ const handleImageChange = (e) => {
                 </button>
                 
                   
-                <button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
+                <button onClick={() => { setIsModalOpen(true); setSelectedUser(null); }}  className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
                   <FaPlus />
                   <p className="ml-2">Créer un Utilisateur</p>
                 </button>
@@ -152,162 +254,171 @@ const handleImageChange = (e) => {
             </div>
 
             {/* Table des produits */}
-            <table className="min-w-full table-fixed text-gray" style={{ backgroundColor: '#041122' }}>
-              <thead className="text-white text-left" style={{ backgroundColor: '#041130' }}>
-                <tr>
-                <th className="py-2 px-4  ">ID</th>
-                  <th className="py-2 px-4 ">Nom</th>
-                  <th className="py-2 px-4 ">Email</th>
-                  <th className="py-2 px-4 ">Role</th>
-                  <th className="py-2 px-4 ">Action</th>
-                </tr>
-              </thead>
-              <tbody className="text-white">
-                {currentUsers.map((utilisateur, index) => (
-                  <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-4">{utilisateur.id}
-                    </td>
-                    
-                    <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.nom}</span>
-                    </td>
-                    <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.email}</span>
-                      
-                    </td>
-                    <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.role}</span>
-                    </td>
-                    
-                    <td className=" flex py-2 px-4">
-                      <FaEdit className="cursor-pointer text-green-500" />
-                      <FaTrash className='cursor-pointer text-red-800 ml-2'/>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {message && <div className="alert text-green-800">{message}</div>}
+      <table className="min-w-full table-fixed text-gray" style={{ backgroundColor: '#041122' }}>
+        <thead className="text-white text-left" style={{ backgroundColor: '#041130' }}>
+          <tr>
+            <th className="py-2 px-4">ID</th>
+            <th className="py-2 px-4">Nom</th>
+            <th className="py-2 px-4">Email</th>
+            <th className="py-2 px-4">Role</th>
+            <th className="py-2 px-4">Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-white">
+          {currentUsers.map(user => (
+            <tr key={user.idUtilisateur} className="hover:bg-gray-900 border-b text-white-500">
+              <td className="py-2 px-4 text-white-500">{user.idUtilisateur}</td>
+              <td className="py-2 px-4"><span className="text-sm text-white-500">{user.nom}</span></td>
+              <td className="py-2 px-4"><span className="text-sm text-gray-500">{user.email}</span></td>
+              <td className="py-2 px-4"><span className="text-sm text-gray-500">{user.role}</span></td>
+              <td className="flex py-2 px-4">
+                <FaEdit onClick={() => handleEdit(user)} className="cursor-pointer text-green-500" />
+                <FaTrash onClick={() => handleDelete(user.idUtilisateur)} className='cursor-pointer text-red-800 ml-2' />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
           </div>
 
-          {/* Modal pour ajouter un utilisateur */}
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-              <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
-                <div className='flex justify-between mb-6'>
-                  <h2 className="text-white">Créer un utilisateur</h2>
-                  <button onClick={() => setIsModalOpen(false)} className="text-white">
-                    <FaWindowClose />
+ 
+      {/* Modal pour ajouter un utilisateur */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
+            <div className="flex justify-between mb-6">
+              <h2 className="text-white">{selectedUser ? 'Modifier un utilisateur' : 'Créer un utilisateur'}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-white">
+                <FaWindowClose />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div>
+                {['nom', 'email', 'adresse', 'role'].map(field => (
+                  <div className="mt-4" key={field}>
+                    <label className="text-white">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                    <input
+                      name={field}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                      type={field === 'email' ? 'email' : 'text'}
+                      className="w-full p-2 rounded bg-gray-700 text-white"
+                      style={{ backgroundColor: '#041122' }}
+                    />
+                  </div>
+                ))}
+
+                {!selectedUser && (
+                  <>
+                    <div className="flex">
+                      {['mot_de_passe', 'confirmationMotDePasse'].map(field => (
+                        <div className="mt-4" key={field}>
+                          <label className="text-white">{field === 'mot_de_passe' ? 'Mot de passe' : 'Confirmer le mot de passe'}</label>
+                          <input
+                            name={field}
+                            type="password"
+                            className="w-full p-2 rounded bg-gray-700 text-white"
+                            style={{ backgroundColor: '#041122' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex mt-4 justify-between">
+                      <div className="mt-4">
+                        <label className="text-white">Ajouter une photo</label>
+                        <input
+                          type="file"
+                          accept=".jpg, .jpeg, .png"
+                          onChange={(e) => setSelectedFile(e.target.files[0])}
+                          className="hidden"
+                          id="imageUpload"
+                        />
+                        <label
+                          htmlFor="imageUpload"
+                          className="w-32 h-32 border-2 border-dashed border-gray-500 flex items-center justify-center cursor-pointer"
+                        >
+                          {selectedFile ? (
+                            <img
+                              src={URL.createObjectURL(selectedFile)}
+                              alt="Aperçu de l'image"
+                              className="w-32 h-32 cover rounded"
+                            />
+                          ) : (
+                            <span className="text-white text-center text-sm">Image au format jpg, png, jpeg</span>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="mt-4 flex justify-between">
+                  <button type="submit" className="bg-red-600 px-8 py-2 rounded text-white">
+                    {selectedUser ? 'Modifier' : 'Créer'}
                   </button>
                 </div>
-                
-                <form>
-                  <div>
-                  <div className="mt-4">
-                    <label className="text-white">Nom</label>
-                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
-                  </div>
-
-                  <div className="mt-4">
-                    <label className="text-white">Email</label>
-                    <input type="email" className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }} />
-                  </div>
-
-                    <label className="text-white">Roles</label>
-                    <select className="w-full p-2 rounded bg-gray-700 text-white" style={{ backgroundColor: '#041122' }}>
-                      <option>Administrateur</option>
-                      <option>Gestionnaire des commandes</option>
-                      <option>Gestionnaire des produits</option>
-                    </select>
-                  </div>
-                  <div className='flex'>
-                  <div className="mt-4">
-                    <label className="text-white">Mot de passe</label>
-                    <input type="password" className="w-full p-2 rounded bg-gray-700 text-white"  style={{ backgroundColor: '#041122' }}/>
-                  </div>
-                  <div className="mt-4 ml-4">
-                    <label className="text-white">Confirmer le mot de passe</label>
-                    <input type="password" className="w-full p-2 rounded bg-gray-700 text-white"  style={{ backgroundColor: '#041122' }}/>
-                  </div>
-                  </div>
-
-                  <div className="flex mt-4 justify-between">
-
-                  <div className="mt-4">
-                            <label className="text-white">Ajouter une photo</label>
-                                    {/* Input de fichier masqué */}
-                                        <input 
-                                        type="file" 
-                                        accept=".jpg, .jpeg, .png" 
-                                        onChange={handleImageChange} 
-                                        className="hidden" 
-                                        id="imageUpload"  // ID pour relier au bouton simulé
-                                        />
-
-                                    {/* Zone cliquable pour simuler l'input de fichier */}
-                                    <label 
-                                            htmlFor="imageUpload" 
-                                            className="w-32 h-32 border-2 border-dashed border-gray-500 flex items-center justify-center cursor-pointer"
-                                    >
-                                    {/* Si un fichier est sélectionné, affichez l'aperçu de l'image */}
-                                    {selectedFile ? (
-                                        <img 
-                                            src={URL.createObjectURL(selectedFile)} 
-                                            alt="Aperçu de l'image" 
-                                            className="w-32 h-32 cover rouunded"
-                                        />
-                                    ) : (
-                                <span className="text-white text-center text-sm">image au format jpg, png, jpeg</span>
-                                        )}
-                            </label>
-                        </div>
-                                        <div>
-                                            <button className="mt-12 bg-red-600 px-8 py-2 rounded text-white">Enregistrer</button>
-                                        </div>
-                    
-                            
-                        </div>
-                 
-                </form>
               </div>
-            </div>
-          )}
+            </form>
+          </div>
+        </div>
+      )}
 
           {/* modal filtrer */}
-          {isFilterModalOpen && (
+          {isFilterModalOpen && ( 
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
     <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
       <div className="flex justify-between mb-6">
-        <h2 className="text-white">Filtrer les Produits</h2>
+        <h2 className="text-white">Filtrer les utilisateurs</h2>
         <button onClick={() => setIsFilterModalOpen(false)} className="text-white">
           <FaWindowClose />
         </button>
       </div>
 
       <div>
-        <label className="text-white">Roles</label>
+        <label className="text-white">Rôles</label>
         <select
           className="w-full p-2 rounded bg-gray-700 text-white"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
-          <option value="Administrateur">Terminer</option>
-          <option value="Gestionnaire des commandes">Encours</option>
-          <option value="Gestionnaire des produits">En traitement</option>
+          <option value="">Tous</option>
+          <option value="Administrateur">Administrateur</option>
+          <option value="Gestionnaire des commandes">Gestionnaire des commandes</option>
+          <option value="Gestionnaire des produits">Gestionnaire des produits</option>
         </select>
       </div>
 
       <div className="mt-4">
-        <label className="text-white">Quantité</label>
-        <input type="date" 
-        className="w-full p-2 rounded bg-gray-700 text-white"
-        value={selectedQuantity.date}
-        onChange={(e) => setSelectedQuantity(e.target.value)}/>
+        <label className="text-white">Trier par Nom</label>
+        <select
+          className="w-full p-2 rounded bg-gray-700 text-white"
+          value={selectedNameSort}
+          onChange={(e) => setSelectedNameSort(e.target.value)}
+        >
+          <option value="">Aucun tri</option>
+          <option value="name_asc">Nom croissant</option>
+          <option value="name_desc">Nom décroissant</option>
+        </select>
+      </div>
+
+      <div className="mt-4">
+        <label className="text-white">Trier par ID</label>
+        <select
+          className="w-full p-2 rounded bg-gray-700 text-white"
+          value={selectedIdSort}
+          onChange={(e) => setSelectedIdSort(e.target.value)}
+        >
+          <option value="">Aucun tri</option>
+          <option value="id_asc">ID croissant</option>
+          <option value="id_desc">ID décroissant</option>
+        </select>
       </div>
 
       <button
         onClick={() => {
           setIsFilterModalOpen(false);
-          // Logique de filtrage à ajouter ici
         }}
         className="mt-4 bg-red-600 px-4 py-2 rounded text-white"
       >
@@ -316,7 +427,6 @@ const handleImageChange = (e) => {
     </div>
   </div>
 )}
-
 
 
 

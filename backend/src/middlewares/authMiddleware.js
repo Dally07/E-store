@@ -5,9 +5,12 @@ const secretKey = process.env.JWT_SECRET || 'secret';
 
 // verification token
 exports.authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    
-    if (!token) return res.status(401).json({ message: 'Accès non autorisé' });
+    const tokenHeader = req.header('Authorization');
+    if (!tokenHeader || !tokenHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Accès non autorisé' });
+    }
+
+    const token = tokenHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, secretKey);

@@ -3,8 +3,11 @@ const bcrypt = require('bcryptjs');
 const Utilisateur = require('../models/utilisateur');
 const secretKey = process.env.JWT_SECRET || 'secret';
 
-exports.register = async (userData) => {
+exports.register = async (userData, req) => {
     const { nom, email, mot_de_passe, adresse, role } = userData;
+    const photo = req.file ? req.file.filename : null; 
+    
+    console.log('Photo:', photo);
 
     // Vérification si l'utilisateur existe déjà
     const existingUser = await Utilisateur.findOne({ where: { email } });
@@ -21,7 +24,8 @@ exports.register = async (userData) => {
         email,
         mot_de_passe: hashedPassword,
         adresse,
-        role
+        role,
+        photo
     });
 
     return newUser;

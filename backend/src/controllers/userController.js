@@ -4,7 +4,7 @@ const Utilisateur = require('../models/utilisateur');
 // registration
 exports.register = async (req, res) => {
     try {
-        const newUser = await authService.register(req.body);
+        const newUser = await authService.register(req.body, req);
         res.status(201).json({ message: 'Utilisateur créé avec succès', newUser });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -48,6 +48,9 @@ exports.getUserById = async (req, res) => {
 // modifier un utilisateur
 exports.updateUser = async (req, res) => {
     try {
+        console.log(req.params.id)
+        console.log(req.body)
+        
         const user = await Utilisateur.findByPk(req.params.id);
         if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
 
