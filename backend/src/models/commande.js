@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 const Client = require('./client');
-const Produit = require('./produits');
 
 
 const Commande = sequelize.define('Commande', {
@@ -23,14 +22,15 @@ const Commande = sequelize.define('Commande', {
         defaultValue: DataTypes.NOW
     },
     statut: {
-        type: DataTypes.ENUM('En cours', 'Expédiée', 'Livrée', 'Annulée', 'En livraison'),
-        defaultValue: 'En cours'
+        type: DataTypes.ENUM( 'En traitement', 'Livrée', 'Annulée', 'En livraison'),
+        defaultValue: 'En traitement'
     },
     total: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 });
+Commande.prototype.getMontantEnAriary = function() { return new Intl.NumberFormat('fr-MG', { style: 'currency', currency: 'MGA' }).format(this.total); };
 
 
 

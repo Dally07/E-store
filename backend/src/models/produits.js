@@ -16,7 +16,7 @@ const Produit = sequelize.define('Produit', {
         type: DataTypes.TEXT
     },
     prix: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     quantite_en_stock: {
@@ -30,10 +30,7 @@ const Produit = sequelize.define('Produit', {
     couleurs_disponibles: {
         type: DataTypes.ARRAY(DataTypes.STRING(50))
     },
-    processeur: {
-        type: DataTypes.STRING(100),
-        allowNull: true
-    },
+   
     reference: {
         type: DataTypes.STRING(100),
         allowNull: true
@@ -59,6 +56,8 @@ const Produit = sequelize.define('Produit', {
 {
     timestamps: true
 });
+
+Produit.prototype.getMontantEnAriary = function() { return new Intl.NumberFormat('fr-MG', { style: 'currency', currency: 'MGA' }).format(this.prix); };
 
 
 

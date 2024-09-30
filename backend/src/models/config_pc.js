@@ -19,6 +19,10 @@ const Config_Pc = sequelize.define('Config_Pc', {
     carte_graphique: {
         type: DataTypes.STRING(100)
     },
+    processeur: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     ram: {
         type: DataTypes.STRING(50)
     },

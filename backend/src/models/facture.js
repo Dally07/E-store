@@ -26,12 +26,14 @@ const Facture = sequelize.define('Facture', {
         defaultValue: DataTypes.NOW
     },
     total: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     details: {
         type: DataTypes.TEXT
     }
 });
+
+Facture.prototype.getMontantEnAriary = function() { return new Intl.NumberFormat('fr-MG', { style: 'currency', currency: 'MGA' }).format(this.total); };
 
 module.exports = Facture;

@@ -22,7 +22,7 @@ module.exports = { sequelize };
    //// dialectOptions: {
     //    ssl: {
     //        require: true,
-    ////        rejectUnauthorized: true// Assurez-vous d'utiliser cette option si SSL est requis
+    ////        rejectUnauthorized: true
   //      }
   //  }
 //});

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit,  FaTrash } from 'react-icons/fa';
@@ -13,26 +14,39 @@ const Client = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
-  const [selectedFile, setSelectedFile] =useState(null)
+  const [selectedFile, setSelectedFile] =useState(null);
+  const [clientData, setClientData] = useState([]);
 
-  const utilisateur = [
-    {id: '1', nom:'maminomenjanahary', email: 'dallymaminomenjanahar@gmail.com', adresse: 'Ambodirano, Fianarantsoa', tel: '0342584578'},
-    {id: '2', nom:'maminiaina', email: 'maminomenjanahar@gmail.com', adresse: 'Ambodirano, Fianarantsoa', tel: '0342574578'},
+  useEffect(() => {
+    const fetchClient = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3001/api/client/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        console.log(response.data)
+        setClientData(response.data);
+      } catch (error) {
+        console.error('erreur lors de la recuperation des produits', error)
+      }
+    };
+    fetchClient();
+  }, []);
 
-];
+
 
  
 
 
   
   // Fonction pour filtrer les produits selon le terme de recherche
-  const filteredUsers = utilisateur.filter(utilisateur => {
-    const categoryMatch = selectedCategory ? utilisateur.statut === selectedCategory : true;
+  const filteredUsers = clientData.filter(client => {
+    const categoryMatch = selectedCategory ? client.statut === selectedCategory : true;
 
       const searchMatch = searchTerm ? 
-      utilisateur.adresse.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      utilisateur.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      utilisateur.email.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+      client.adresseCli.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.nomCli.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.emailCli.toLowerCase().includes(searchTerm.toLowerCase()) : true;
     return categoryMatch  && searchMatch;
   });
 
@@ -50,7 +64,7 @@ const Client = () => {
 
   // Fonction pour exporter en fichier Excel
   const exportExcel = () => {
-    const ws = utils.json_to_sheet(utilisateur);
+    const ws = utils.json_to_sheet(clientData);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'commande');
     const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' });
@@ -159,23 +173,23 @@ const handleImageChange = (e) => {
                 </tr>
               </thead>
               <tbody className="text-white">
-                {currentUsers.map((utilisateur, index) => (
+                {currentUsers.map((client, index) => (
                   <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-4">{utilisateur.id}
+                    <td className="py-2 px-4">{client.idCli}
                     </td>
                     
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.nom}</span>
+                      <span className="text-sm text-gray-500">{client.nomCli}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.email}</span>
+                      <span className="text-sm text-gray-500">{client.emailCli}</span>
                       
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.adresse}</span>
+                      <span className="text-sm text-gray-500">{client.adresseCli}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{utilisateur.tel}</span>
+                      <span className="text-sm text-gray-500">{client.telCli}</span>
                     </td>
                     
                     <td className=" flex py-2 px-4">

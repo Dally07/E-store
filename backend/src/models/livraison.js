@@ -17,6 +17,13 @@ const Livraison = sequelize.define('Livraison', {
         },
         onDelete: 'CASCADE'
     },
+    client_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Client,
+            key: 'idCli'
+        }
+    },
     nom_livreur: {
         type: DataTypes.STRING,
         allowNull: false
@@ -49,7 +56,7 @@ const Livraison = sequelize.define('Livraison', {
 
 Livraison.belongsTo(Commande, {foreignKey: 'commande_id', onDelete: 'CASCADE'});
 
-Livraison.belongsTo(Client, {foreignKey: 'client_id'});
+Livraison.belongsTo(Client, {foreignKey: 'client_id', as: 'client'});
 
 
 module.exports = Livraison;

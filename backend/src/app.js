@@ -12,6 +12,8 @@ const searchRoutes = require('./routes/searchRoutes');
 const dashbordRoutes = require('./routes/routesDashboard');
 const rapportRoutes = require('./routes/rapportRoutes');
 const bodyParser = require('body-parser');
+const paiementRoutes = require('./routes/paiementRoutes');
+const clientRoutes = require('./routes/clientsRoutes')
 
 app.use(cors());
 app.use(express.json());
@@ -27,6 +29,9 @@ app.use('/api/livraison', livraisonRoutes);
 app.use('/api/recherche', searchRoutes);
 app.use('/api/stat', dashbordRoutes);
 app.use('/api', rapportRoutes);
+app.use('/api/paiement', paiementRoutes);
+app.use('/api/client',clientRoutes )
+
 
 
 

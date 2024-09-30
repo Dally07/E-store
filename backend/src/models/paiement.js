@@ -17,7 +17,7 @@ const Paiement = sequelize.define('Paiement', {
         onDelete: 'CASCADE'
     },
     montant: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     methode: {
@@ -37,5 +37,7 @@ const Paiement = sequelize.define('Paiement', {
         defaultValue: DataTypes.NOW
     }
 });
+
+Paiement.prototype.getMontantEnAriary = function() { return new Intl.NumberFormat('fr-MG', { style: 'currency', currency: 'MGA' }).format(this.montant); };
 
 module.exports = Paiement;

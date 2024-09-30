@@ -13,6 +13,7 @@ import InfoFacture from './page/infoFacture';
 import InfoLivraison from './page/infoLivraison';
 import Client from './page/client';
 import Rapport from './page/rapport';
+import Livraison from './page/livraison';
 
 function App() {
   return (
@@ -26,11 +27,13 @@ function App() {
         <Route path="/utilisateur" element={<Utilisateur/>} />
         <Route path="/facture" element={<Facture/>} />
         <Route path="/creerProduit" element={<CreateProduct/>} />
+        <Route path="/creerProduit/:idProduit" element={<CreateProduct/>} />
         <Route path="/infoCommande" element={<InfoCommande/>} />
         <Route path="/infoFacture" element={<InfoFacture/>} />
         <Route path="/infoLivraison" element={<InfoLivraison/>} />
         <Route path="/client" element={<Client/>} />
         <Route path="/rapport" element={<Rapport/>} />
+        <Route path="/livraison" element={<Livraison/>} />
 
 
         

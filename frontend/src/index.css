@@ -3,3 +3,6 @@
 @tailwind utilities;
 
 
+.bleu_background{
+    background-color: #030C1B;
+}

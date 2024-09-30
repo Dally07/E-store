@@ -19,7 +19,8 @@ exports.createProduct = async (productData, configurationData, user) => {
             rom: configurationData.rom,
             ecran: configurationData.ecran,
             tactile: configurationData.tactile,
-            clavier_rgb: configurationData.clavier_rgb
+            clavier_rgb: configurationData.clavier_rgb,
+            processeur: configurationData.processeur
         });
     } else if (productData.categorie === 'Imprimante') {
         await ConfigurationImprimante.create({
@@ -60,6 +61,7 @@ exports.updateProduct = async (id, productData, configurationData, user) => {
     if (productData.categorie === 'PC') {
         await ConfigurationPC.update({
             carte_graphique: configurationData.carte_graphique,
+            processeur: configurationData.processeur,
             ram: configurationData.ram,
             rom: configurationData.rom,
             ecran: configurationData.ecran,
@@ -94,10 +96,6 @@ exports.updateProduct = async (id, productData, configurationData, user) => {
 
 exports.getAllProducts = async () => {
     const products = await Produit.findAll();  
-       
-            
-       
-
     return products;
 };
 

@@ -1,6 +1,7 @@
 const Commande = require('../models/commande');
 const Livraison = require('../models/livraison');
-const { envoyerNotification } = require('../utils/notificationUtil')
+const Client = require('../models/client')
+const Paiement = require('../models/paiement')
 
 
 
@@ -10,14 +11,22 @@ exports.createLivraison = async (req, res) => {
         const { commande_id, nom_livreur, vehicule, numero_vehicule, telephone_livreur, heure_depart } = req.body;
 
         const commande = await Commande.findByPk(commande_id, {
-            include: { model: Client, attributes: ['adresse']}
+            include: { model: Client, as: 'client', attributes: ['adresseCli']}
         });
 
         if (!commande) {
-            return res.statut(404).json({ message: 'commande non trouver'});
+            return res.status(404).json({ message: 'commande non trouver'});
     }
 
-    const adresse_livraison = commande.Client.adresse;
+    if (commande.statut !== 'En traitement') {
+        return res.status(400).json({message: 'la commande doit etre en traitement pour etre mis en livraison'});
+    }
+
+    if (!commande.client) {
+        return res.status(400).json({message: 'client non trouver pour cette commande'})
+    }
+
+    const adresse_livraison = commande.client.adresseCli;
 
         const livraison = await Livraison.create({
             commande_id,
@@ -30,16 +39,11 @@ exports.createLivraison = async (req, res) => {
         });
 
         await Commande.update({ statut: 'En livraison'}, { where: {idCommande: commande_id } });
+       
+        res.status(201).json({message: 'Livraison en cours avec succes',livraison});
 
-        //notification envoyer au client
-        const message = 'votre commande est en cours de livraison.';
-        const commandes = await Commande.findByPk(commande_id);
-        await envoyerNotification(commandes.clent_id, message);
-
-
-        res.status(201).json('Livraison en cours avec succes',livraison);
     } catch (error) {
-        res.status(500).json({ message: 'Erreur lors de la création de la livraison', error });
+        res.status(500).json({ message: 'Erreur lors de la création de la livraison', error: error.message });
     }
 };
 
@@ -52,18 +56,79 @@ exports.updateLivraison = async (req, res) => {
 
         const livraison = await Livraison.findByPk(livraisonId);
         if (!livraison) return res.status(404).json({ message: 'Livraison non trouvée' });
-
-        await Commande.update({ statut: 'Livree'}, { where: { idCommande: livraison.commande_id } });
-
-
-        // notification envoyer au cliet=nt
-        const message =  'Votre commande a ete livrer avec succes.';
+        
         const commande = await Commande.findByPk(livraison.commande_id);
-        await envoyerNotification(commande.clent_id, message);
+        if (!commande) {
+            return res.status(404).json({message: 'commande non trouver'});
+        }
+
+        if (commande.statut !== 'En livraison') {
+            return res.status(400).json({message: 'la commande doit etre en livraison pour etre marque comme Livrée'})
+        }
+
+        await livraison.update({heure_arrivee});
+        await Commande.update({ statut: 'Livrée'}, { where: { idCommande: livraison.commande_id } });
         
         res.status(200).json({ message: 'Livraison mise à jour avec succès' });
+
     } catch (error) {
         res.status(500).json({ message: 'Erreur lors de la mise à jour de la livraison', error });
+    }
+};
+
+exports.getLivraisonById = async (req, res) => {
+    try {
+        const livraisonId = req.params.id;
+        const livraison = await Livraison.findByPk(livraisonId, {
+            include: [
+                {
+                    model: Commande,
+                    
+                    attributes: ['idCommande', 'date_commande'], 
+                    include: [
+                        {
+                            model: Client,
+                            as: 'client',
+                            attributes: ['nomCli', 'emailCli', 'adresseCli', 'telCli'] 
+                        },
+                        {
+                            model: Paiement, 
+                            as: 'paiement',
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (!livraison) {
+            return res.status(404).json({ message: 'Livraison non trouvée' });
+        }
+
+        res.status(200).json(livraison);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la livraison:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération de la livraison', error: error.message });
+    }
+};
+
+
+exports.getAllLivraisons = async (req, res) => {
+    try {
+        const livraisons = await Livraison.findAll({
+            include: {
+                model: Commande,
+                include: {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['nomCli', 'emailCli', 'adresseCli'] 
+                }
+            }
+        });
+
+        res.status(200).json(livraisons);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des livraisons:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des livraisons', error: error.message });
     }
 };
 

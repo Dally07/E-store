@@ -6,6 +6,7 @@ const Config_Imprimante = require('./config_imprimante');
 const Client = require('./client');
 const Commande = require('./commande');
 const commande_produit = require('./commande_produit')
+const Paiement = require('./paiement')
 
 // Associer ConfigurationPC à Produit
 Produit.hasOne(ConfigurationPC, {
@@ -55,3 +56,14 @@ Commande.belongsTo(Client, { foreignKey: 'client_id', as: 'client'});
 // association commande et produit
 Commande.belongsToMany(Produit, { through: commande_produit, foreignKey: 'commande_id',  as: 'produits'});
 Produit.belongsToMany(Commande, { through: commande_produit, foreignKey: 'produit_id', as: 'commandes'});
+
+// association paiment et commande
+Commande.hasMany(Paiement, {
+    foreignKey: 'commade_id',
+    as: 'paiement'
+});
+
+Paiement.belongsTo(Commande, {
+    foreignKey: 'commande_id',
+    as: 'commande'
+})

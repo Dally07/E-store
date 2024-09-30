@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Routes pour la gestion des produits
-router.post('/', authMiddleware, requireRole('Gestionnaire des produits', 'Administrateur'),upload.single('photo1'), productController.createProduct);
+router.post('/', upload.single('photo1'), productController.createProduct);
 router.get('/', authMiddleware, productController.getAllProducts);
 router.get('/:id', authMiddleware,  productController.getProductById);
 router.put('/:id', authMiddleware, requireRole('Gestionnaire des produits', 'Administrateur'),upload.single('photo1'), productController.updateProduct);

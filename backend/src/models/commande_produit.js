@@ -30,7 +30,7 @@ const Commande_Produit = sequelize.define('Commande_Produit', {
         allowNull: false
     },
     prix: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     photo : {
@@ -38,5 +38,6 @@ const Commande_Produit = sequelize.define('Commande_Produit', {
         allowNull: true
     }
 });
+Commande_Produit.prototype.getMontantEnAriary = function() { return new Intl.NumberFormat('fr-MG', { style: 'currency', currency: 'MGA' }).format(this.prix); };
 
 module.exports = Commande_Produit;

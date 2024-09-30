@@ -47,7 +47,7 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/infoLivraison">
+                    <Link to="/livraison">
                       <span><FaDotCircle className="inline mr-3" size={10} /> Expédition</span>
                     </Link>
                   </li>

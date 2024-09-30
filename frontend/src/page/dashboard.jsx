@@ -98,7 +98,7 @@ const Dashboard = () => {
   };
 
     return (
-      <div className="h-screen flex flex-col" style={{backgroundColor: "#030C1B"}}>
+      <div className="h-screen flex flex-col bleu_background" >
         {/* Header fixé en haut */}
         <Header toggleSidebar={toggleSidebar} />
         <div className="flex">
@@ -106,7 +106,7 @@ const Dashboard = () => {
           <Sidebar isOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar} />
           {/* Contenu principal avec scrollbar */}
-          <div className="flex-1 overflow-y-auto p-6 pt-20 pl-64 ml-6" style={{backgroundColor: "#030C1B"}}>
+          <div className="flex-1 overflow-y-auto p-6 pt-20 pl-64 ml-6 bleu_background" >
             <h1 className="text-2xl text-white font-semibold mb-6">BONJOUR, Utilisateur</h1>
   
             {/* Cartes d'informations */}
@@ -118,7 +118,7 @@ const Dashboard = () => {
                               <h3 className="text-2xl font-bold mt-5">120,350,000 MGA</h3>
                           </div>
                           {/* Icône en haut à droite */}
-                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-lg"style={{backgroundColor: "#030C1B"}} >
+                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-l bleu_backgroundg" >
                             <FaChartLine className="text-red-600 text-lg" />
                           </div>
                     </div>
@@ -130,7 +130,7 @@ const Dashboard = () => {
                               <h3 className="text-2xl font-bold mt-5">1452</h3>
                           </div>
                           {/* Icône en haut à droite */}
-                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-lg"style={{backgroundColor: "#030C1B"}} >
+                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-l bleu_backgroundg" >
                             <FaShoppingCart className="text-red-600 text-lg" />
                           </div>
                     </div>
@@ -142,7 +142,7 @@ const Dashboard = () => {
                               <h3 className="text-2xl font-bold mt-5">1920</h3>
                           </div>
                           {/* Icône en haut à droite */}
-                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-lg"style={{backgroundColor: "#030C1B"}} >
+                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-l bleu_backgroundg" >
                             <FaUser className="text-red-600 text-lg" />
                           </div>
                     </div>
@@ -154,7 +154,7 @@ const Dashboard = () => {
                               <h3 className="text-2xl font-bold mt-5">17</h3>
                           </div>
                           {/* Icône en haut à droite */}
-                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-lg"style={{backgroundColor: "#030C1B"}} >
+                          <div className="absolute top-4 right-4 rounded-full bg-gray-600 p-1 shadow-l bleu_backgroundg" >
                             <FaEye className="text-red-600 text-lg" />
                           </div>
                     </div>
@@ -226,7 +226,7 @@ const Dashboard = () => {
             <div className="bg-white text-white p-4 rounded-md" style={{backgroundColor: "#041122"}}>
             <div className='flex justify-between'>
               <div><h3 className="text-xl font-semibold mb-4">Commande recente</h3></div>
-              <div className='p-2 rounded-lg font-semibold cursor-pointer'style={{backgroundColor: "#030C1B"}}><h6>Voir tout</h6></div>    
+              <div className='p-2 rounded-lg font-semibold cursor-pointe bleu_backgroundr'><h6>Voir tout</h6></div>    
             </div>
               <table className="w-full text-left text-gray">
                 <thead>
