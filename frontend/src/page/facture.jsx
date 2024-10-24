@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter,FaEye } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Facture = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,20 +15,35 @@ const Facture = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [startDate, setStartDate] = useState('');
  const [endDate, setEndDate] = useState('');
+ const [paiement , setPaiement] = useState([]);
+
+
+ 
+ useEffect(() => {
+  const fetchCommande = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/paiement/');
+      setPaiement(response.data);
+      console.log(response);
+      console.log(response.data)
+    
+    }catch (error) {
+      console.error('erreur lors de la recuperation des commandes', error)
+    }
+    
+  };
+  fetchCommande();
+}, []);
  
 
-  const facture = [
-    {id: '1', idCommande:'2', total: '5.800.000.MGA', statut: 'Payer', date: '2024-09-12'},
-    {id: '2', idCommande:'3', total: '450.000 MGA', statut: 'Non payer', date: '2024-09-12'},
-
-];
+  
 
  
 
 
   
   // Fonction pour filtrer les factures selon le terme de recherche
-  const filteredfacture = facture.filter(facture => {
+  const filteredfacture = paiement.filter(facture => {
     const categoryMatch = selectedCategory ? facture.statut === selectedCategory : true;
    
 
@@ -56,7 +73,7 @@ const Facture = () => {
 
   // Fonction pour exporter en fichier Excel
   const exportExcel = () => {
-    const ws = utils.json_to_sheet(facture);
+    const ws = utils.json_to_sheet(paiement);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'commande');
     const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' });
@@ -66,8 +83,8 @@ const Facture = () => {
 
   const getBackgrounColor = (statut) => {
     switch (statut) {
-        case 'Payer' : return 'bg-green-500';
-        case 'Non payer' : return 'bg-yellow-600';
+        case 'Complété' : return 'bg-green-900';
+        case 'Non payer' : return 'bg-yellow-900';
         default: return '';
     }
   }
@@ -154,27 +171,29 @@ const Facture = () => {
                 </tr>
               </thead>
               <tbody className="text-white">
-                {currentFacture.map((facture, index) => (
+                {currentFacture.map((paiement, index) => (
                   <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-4">{facture.id}
+                    <td className="py-2 px-4">{paiement.idPaiement}
                     </td>
                     
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{facture.idCommande}</span>
+                      <span className="text-sm text-gray-500">{paiement.commande_id}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{facture.total}</span>
+                      <span className="text-sm text-gray-500">{paiement.commande.total}</span>
                       
                     </td>
                     <td className="py-2 px-4">  
-                      <span className={`text-white rounded ${getBackgrounColor(facture.statut)}`}>{facture.statut}</span>
+                      <span className={`text-white rounded px-2 ${getBackgrounColor(paiement.statut)}`}>{paiement.statut}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{facture.date}</span>
+                      <span className="text-sm text-gray-500">{paiement.date_paiement}</span>
                     </td>
                     
                     <td className=" flex py-2 px-4">
-                      <FaEye className="cursor-pointer text-white-500" />
+                     <Link to={`/infoFacture/${paiement.idPaiement}`}>
+                     <FaEye className="cursor-pointer text-white-500" />
+                     </Link>
                     </td>
                   </tr>
                 ))}

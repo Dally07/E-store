@@ -6,3 +6,45 @@
 .bleu_background{
     background-color: #030C1B;
 }
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #section-imprimer, 
+    #section-imprimer * {
+        visibility: visible;
+    }
+
+    #section-imprimer {
+        position: absolute;
+        top: 10;
+        left: 0;
+        width: 100%;
+    }
+
+    #section-imprimer1, 
+    #section-imprimer1 * {
+        visibility: visible;
+    }
+
+    #section-imprimer1 {
+        position: absolute;
+        top: 40;
+        left: 0;
+        width: 100%;
+    }
+
+    #section-imprimer2, 
+    #section-imprimer2 * {
+        visibility: visible;
+    }
+
+    #section-imprimer2 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+}

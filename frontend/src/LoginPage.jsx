@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Importez useNavigate
 import axios from "axios";
 import logo from './assets/computer.jpg'
+import { FaUser, FaUserCircle } from "react-icons/fa";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -47,8 +48,11 @@ const LoginPage = () => {
         </div>
 
         {/* Texte d'accueil */}
-        <div className="justify-between items-center mb-6 md:mb-0 space-y-20 ">
-          <h1 className="text-white text-4xl mb-6">BONJOUR A VOUS !</h1>
+        <div className="justify-between items-center mb-4 md:mb-0 space-y-20 ">
+          <div className="flex items-center">
+          <FaUserCircle className="text-center w-24 h-24 text-white-500"/>
+          <h1 className="text-white text-center text-4xl mb-4 ml-8">Se Connecter</h1>
+          </div>
           <form className="space-y-4" onSubmit={handleLogin}>
             <div className="mb-4">
               <input
@@ -77,13 +81,13 @@ const LoginPage = () => {
             <div className="mb-8">
               <button type="submit" className="w-full p-3 bg-pink-600 rounded-lg text-white font-bold hover:bg-pink-900 transition duration-300 flex justify-between items-center">
                 Se Connecter
-                <span className="ml-2">→</span>
+                <span className="ml-2 text-2xl font-bold">→</span>
               </button>
 
               <p className="text-gray-400 mt-2 p-1 text-center">
                 Vous n'avez pas de compte ?{" "}
                 <a href="./" className="text-pink-500 hover:underline">
-                  Veuillez créer un
+                  Contacter un Administrateur
                 </a>
               </p>
             </div>

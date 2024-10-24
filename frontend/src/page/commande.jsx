@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios'
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEye, FaFilter } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Link } from 'react-router-dom';
 
 const Commande = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersParPage, setcommandePerPage] = useState(10);
@@ -14,59 +16,74 @@ const Commande = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
  const [startDate, setStartDate] = useState('');
  const [endDate, setEndDate] = useState('');
+ const [commande, setCommande] = useState([])
 
-  const commande = [
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},  
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'En traitement', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-18', statut: 'Encours', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
-    {id: '25', date:'2024-09-15', statut: 'Terminer', totale: '5.500.000 MGA', payement:'Mvola', nom: 'Sitraka', email: 'sitraka@gmail.com', telephone:'0345685471', produits:'link photo'},
+ const formatDate = (dateString) => {
 
-];
+  const date = new Date(dateString);
+  if (isNaN(date)) {
+    return '';
+  }
+  const day = String(date.getDate());
+  const month = String(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+ };
+
+
+ const getBackground = (statut) => {
+  switch(statut) {
+    case 'En traitement' : return 'bg-yellow-500';
+    case 'En livraison' : return 'bg-green-500';
+    case 'Livrée' : return 'bg-green-800';
+    case 'Annulée' : return 'bg-gray-500';
+  }
+ }
+
+ const getBackgroundPayement = (statut) => {
+  switch(statut) {
+    case 'En attente' : return 'bg-yellow-500';
+    case 'Complété' : return 'bg-blue-900';
+    case 'Non payer' : return 'bg-red-800';
+    case 'Remboursé' : return 'bg-gray-500';
+  }
+ }
+
+  useEffect(() => {
+    const fetchCommande = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/commande');
+        setCommande(response.data);
+        console.log(response);
+        console.log(response.data)
+      
+      }catch (error) {
+        console.error('erreur lors de la recuperation des commandes', error)
+      }
+      
+    };
+    fetchCommande();
+  }, []);
 
 
 
   
   // Fonction pour filtrer les produits selon le terme de recherche
-  const filteredOrder = commande.filter(commande => {
+  const filteredOrder = Array.isArray(commande) ? commande.filter(commande => {
     const categoryMatch = selectedCategory ? commande.statut === selectedCategory : true;
 
       const searchMatch = searchTerm ? 
       commande.statut.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      commande.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      commande.email.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+      commande.client.nomCli.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      commande.client.emailCli.toLowerCase().includes(searchTerm.toLowerCase()) : true;
 
       const commandeDate = new Date(commande.date);
       const start = startDate ? new Date(startDate) : null
       const end = endDate ? new Date(endDate): null
       const datematch = (start && end) ? (commandeDate >= start && commandeDate <= end) : start ? (commandeDate >= start ) : end ? (commandeDate <= end) : true
     return categoryMatch  && searchMatch && datematch;
-  });
+  }) : []
 
   
 
@@ -116,10 +133,10 @@ const Commande = () => {
                 </button>
                 
                   
-                <button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
+                {/*<button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
                   <FaPlus />
                   <p className="ml-2">Créer un commande</p>
-                </button>
+                </button>*/}
               </div>
             </div>
 
@@ -176,74 +193,51 @@ const Commande = () => {
             <table className="min-w-full table-fixed text-gray" style={{ backgroundColor: '#041122' }}>
               <thead className="text-white text-left" style={{ backgroundColor: '#041130' }}>
                 <tr>
-                <th className="py-2 px-4 ">ID/Date/Statut</th>
-                  <th className="py-2 px-4">Total/Payement</th>
+                <th className="py-2 px-4 ">Ref/Date/Statut</th>
+                  <th className="py-2 px-4">Total/payement/statut</th>
                   <th className="py-2 px-4">Nom/Email</th>
-                  <th className="py-2 px-4">Produits</th>
+                  <th className="py-2 px-4 justify-center text-center">Produits commander</th>
                   <th className="py-2 px-4">Action</th>
                 </tr>
               </thead>
               <tbody className="text-white md-6">
                 {currentOrders.map((commande, index) => (
-                  <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-4">{commande.id} <br />
-                        {commande.date} <br />
-                        <span className={`text-white rounded ${getBackgrounColor(commande.statut)}`}>{commande.statut}</span>
+                  <tr key={index} className="hover:bg-gray-900 border-b text-xl">
+                    <td className="py-2 px-4 text-xl">#{commande.idCommande} <br />
+                        {formatDate(commande.date_commande)} <br />
+                        <span className={`text-sm rounded-lg px-2 ${getBackground(commande.statut)}`}>{commande.statut}</span>
                     </td>
                     
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{commande.totale}</span><br />
-                      <span className="text-sm text-gray-500">{commande.payement}</span>
+                      <span className="text-xl text-gray-100">{commande.total} MGA</span><br />
+                      {commande.paiement.map((paiement) => (
+                      <span ><span className={`text-sm px-2 text-white-500  rounded-lg ${getBackgroundPayement(paiement.statut)}`}>{paiement.statut} </span><p className='text-gray-500 text-sm'>{paiement.methode}</p></span>
+                      
+                    ))}
                     </td>
                     <td className="py-2 px-4">  
-                      <span className="text-sm text-gray-500">{commande.nom}</span><br />
-                      <span typeof='email' className="text-sm text-gray-500">{commande.email}</span><br />
-                      <span className="text-sm text-gray-500">{commande.telephone}</span>
+                      <span className="text-lg text-white-500">{commande.client.nomCli}</span><br />
+                      <span typeof='email' className="text-sm text-blue-500">{commande.client.emailCli}</span><br />
+                      <span className="text-sm text-blue-500">{commande.client.telCli}</span>
                       
                     </td>
-                    <td className="py-2 px-4">  
-                      <img className="text-sm text-gray-500" src={commande.produits} alt={commande.produits} />
-                    </td>
+                    {commande.produits.slice(0,3).map((produit, index) => (
+                        <td className="flex flex-row p-0 justify-center items-center " key={index}>  
+                        <img className="w-13 h-12 object-contain m-1 p-0" style={{marginRight: "4px"}} src={`http://localhost:3001/uploads/${produit.photo1}`} alt={commande.produits.photo1} />
+                      </td>
+                    ))}
+                    
                     
                     <td className="py-2 px-4">
-                      <FaEye className="cursor-pointer" />
+                     <Link to={`/infoCommande/${commande.idCommande}`}>
+                     <FaEye className="cursor-pointer" />
+                     </Link>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {/* Modal pour ajouter un produit */}
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-              <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
-                <div className='flex justify-between mb-6'>
-                  <h2 className="text-white">Créer un nouveau produit</h2>
-                  <button onClick={() => setIsModalOpen(false)} className="text-white">
-                    <FaWindowClose />
-                  </button>
-                </div>
-                
-                <form>
-                  <div>
-                    <label className="text-white">Catégories</label>
-                    <select className="w-full p-2 rounded bg-gray-700 text-white">
-                      <option>PC</option>
-                      <option>Accessoires</option>
-                      <option>Imprimante</option>
-                      <option>Telephone</option>
-                    </select>
-                  </div>
-                  <div className="mt-4">
-                    <label className="text-white">Référence</label>
-                    <input type="text" className="w-full p-2 rounded bg-gray-700 text-white" />
-                  </div>
-                  <button className="mt-4 bg-red-600 px-4 py-2 rounded text-white">Enregistrer</button>
-                </form>
-              </div>
-            </div>
-          )}
 
           {/* modal filtrer */}
           {isFilterModalOpen && (
@@ -264,9 +258,10 @@ const Commande = () => {
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
             <option value="">Tout</option>
-          <option value="Terminer">Terminer</option>
-          <option value="Encours">Encours</option>
           <option value="En traitement">En traitement</option>
+          <option value="En livraison">En livraison</option>
+          <option value="Livrée">Livrée</option>
+          <option value="Annulée">Annulée</option>
         </select>
       </div>
 

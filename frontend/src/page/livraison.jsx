@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaFileExport, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter,FaEye } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Link } from 'react-router-dom';
 
 const Livraison = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,13 +15,36 @@ const Livraison = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [startDate, setStartDate] = useState('');
  const [endDate, setEndDate] = useState('');
+ const [livraison, setLivraison] = useState([]);
+
+ const formatDate = (dateString) => {
+ const date = new Date(dateString);
+  if (isNaN(date)) {
+    return '';
+  }
+  const day = String(date.getDate());
+  const month = String(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+ };
  
 
-  const livraison = [
-    {id: '1', nom_livreur:'Zaka', vehicule: 'sprinter', numero_vehicule: '2541FC', telephone_livreur: '0342548652', heure_depart: '2024-09-12', heure_arrivee:'2024-09-15'},
-    {id: '2', nom_livreur:'gABY', vehicule: 'sprinter', numero_vehicule: '2451FC', telephone_livreur: '0342548652', heure_depart: '2024-09-12', heure_arrivee:'2024-09-15'},
-
-];
+ useEffect(() => {
+  const fetchCommande = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/livraison/');
+      setLivraison(response.data);
+      console.log(response);
+      console.log(response.data)
+    
+    }catch (error) {
+      console.error('erreur lors de la recuperation des commandes', error)
+    }
+    
+  };
+  fetchCommande();
+}, []);
 
  
 
@@ -148,7 +173,7 @@ const Livraison = () => {
               <tbody className="text-white">
                 {currentFacture.map((livraison, index) => (
                   <tr key={index} className="hover:bg-gray-900 border-b">
-                    <td className="py-2 px-4">{livraison.id}
+                    <td className="py-2 px-4">{livraison.idLivraison}
                     </td>
                     
                     <td className="py-2 px-4">  
@@ -161,14 +186,17 @@ const Livraison = () => {
                       
                     </td>
                     <td className="py-2 px-4">  
-                      <span className={`text-white rounded`}>{livraison.heure_depart}</span>
+                      <span className={`text-white rounded`}>{new Date(livraison.heure_depart).toLocaleString()}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className=" text-white-500">{livraison.heure_arrivee}</span>
+                      <span className=" text-white-500">{new Date(livraison.heure_arrivee).toLocaleString()}</span>
                     </td>
                     
                     <td className=" py-2 px-4 ">
+                      <Link to={`/infoLivraison/${livraison.idLivraison}`}>
                       <FaEye className="cursor-pointer items-center text-white-500" />
+                      </Link>
+                      
                     </td>
                   </tr>
                 ))}

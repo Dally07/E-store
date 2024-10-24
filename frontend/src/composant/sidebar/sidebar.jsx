@@ -36,24 +36,26 @@ const Sidebar = () => {
 
             <li className="mb-6">
               <div onClick={() => toggleMenu('ventes')} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
+              <Link to="/commande">
                 <span><FaChartLine className="inline mr-3" /> Ventes</span>
+                </Link>
                 <FaChevronDown />
               </div>
               {openMenu === 'ventes' && (
-                <ul className="ml-4 mt-2">
+                <ul className=" px-6 "style={{ backgroundColor: '#030C1B' }}>
                   <li>
                     <Link to="/commande">
-                      <span><FaDotCircle className="inline mr-3" size={10} /> Commande</span>
+                      <span><FaDotCircle className="inline mr-3 m-4 hover:bg-blue-800" size={10} /> Commande</span>
                     </Link>
                   </li>
                   <li>
                     <Link to="/livraison">
-                      <span><FaDotCircle className="inline mr-3" size={10} /> Expédition</span>
+                      <span><FaDotCircle className="inline mr-3 m-4" size={10} /> Expédition</span>
                     </Link>
                   </li>
                   <li>
                     <Link to="/facture">
-                      <span><FaDotCircle className="inline mr-3" size={10} /> Facture</span>
+                      <span><FaDotCircle className="inline mr-3 m-4" size={10} /> Facture</span>
                     </Link>
                   </li>
                 </ul>
@@ -62,14 +64,17 @@ const Sidebar = () => {
 
             <li className="mb-6">
               <div onClick={() => toggleMenu('inventaire')} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
+                <Link to="/products">
                 <span><FaBoxes className="inline mr-3" /> Inventaire</span>
+                </Link>
+                
                 <FaChevronDown />
               </div>
               {openMenu === 'inventaire' && (
-                <ul className="ml-4 mt-2">
+                <ul className="px-6"style={{ backgroundColor: '#030C1B' }}>
                   <li>
                     <Link to="/products">
-                      <span><FaDotCircle className="inline mr-3" size={10} /> Produits</span>
+                      <span><FaDotCircle className="inline mr-3 m-4" size={10} /> Produits</span>
                     </Link>
                   </li>
                 </ul>
@@ -94,14 +99,17 @@ const Sidebar = () => {
 
             <li className="mb-6">
               <div onClick={() => toggleMenu('parametres')} className="flex justify-between cursor-pointer hover:bg-red-800 p-2 rounded-md transition duration-200">
+                <Link to="/utilisateur">
                 <span><FaCogs className="inline mr-3" /> Paramètres</span>
+                </Link>
+               
                 <FaChevronDown />
               </div>
               {openMenu === 'parametres' && (
-                <ul className="ml-4 mt-2">
+                <ul className="px-6"style={{ backgroundColor: '#030C1B' }} >
                   <li>
                     <Link to="/utilisateur">
-                      <span><FaDotCircle className="inline mr-3" size={10} /> Utilisateur</span>
+                      <span><FaDotCircle className="inline mr-3 m-4" size={10} /> Utilisateur</span>
                     </Link>
                   </li>
                 </ul>
