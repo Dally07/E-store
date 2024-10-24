@@ -65,7 +65,7 @@ exports.passerCommande = async (req, res) => {
         if (montantPaiement >= totalCommande) {
             statutPaiement = 'Complété';
         } else {
-            statutPaiement = 'Échoué';
+            statutPaiement = 'Non payer';
         }
 
         // Créer le paiement associé
@@ -118,7 +118,21 @@ exports.updateStatutCommande = async (req, res) => {
 
 exports.getAllCommande = async (req ,res) => {
     try {
-        const commande = await Commande.findAll();
+        const commande = await Commande.findAll(
+            {
+                include: [
+                    {model: Paiement, as: 'paiement' } ,
+                    { model: Produit, as: 'produits', include: [
+                        { model: ConfigurationPC, as: 'configPC' },
+                        { model: ConfigurationImprimante, as: 'configImprimante' },
+                        { model: ConfigurationTelephone, as: 'configTelephone' },
+                        { model: ConfigurationAccessoire, as: 'configAccessoire' }
+                    ] }, // Inclure les produits de la commande
+                    { model: Client , as: 'client'}, 
+                   // Inclure le client associé à la commande
+                  ],
+            }
+        );
         res.status(200).json(commande);
     } catch (error) {
         res.status(500).json({message: 'erreur lors de recuperation des commandes', error});
@@ -132,6 +146,7 @@ exports.getCommandeDetails = async (req, res) => {
       // Récupérer les détails de la commande avec les produits associés et le client
       const commande = await Commande.findByPk(idCommande, {
         include: [
+            {model: Paiement, as: 'paiement' } ,
           { model: Produit, as: 'produits', include: [
             { model: ConfigurationPC, as: 'configPC' },
                 { model: ConfigurationImprimante, as: 'configImprimante' },
