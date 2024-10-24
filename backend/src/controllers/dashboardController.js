@@ -20,25 +20,25 @@ exports.getStat = async (req, res) => {
 };
 
 // FONCTION  STATISTIQUE DE VENTE PAR MOIS
-exports.getSalesStatsBuMonth = async (req, res) => {
+exports.getSalesStatsByDay = async (req, res) => {
     try {
-        const salesByMonth = await Commande.findAll({
+        const salesByDay = await Commande.findAll({
             attributes: [
-                [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'mois'],
+                [Sequelize.fn('DATE_TRUNC', 'day', Sequelize.col('createdAt')), 'jour'],
                 [Sequelize.fn('SUM', Sequelize.col('total')), 'totalVente']
             ],
-            group:['mois'],
-            order: [['mois', 'ASC']]
+            group:['jour'],
+            order: [['jour', 'ASC']]
         });
 
-        res.status(200).json(salesByMonth);
+        res.status(200).json(salesByDay);
     } catch (error) {
         res.status(500).json({ message: 'Erreur lors de la recuperation des ventes mensuelles', error});
     }
 };
 
 
-// FONCTION STATISTIQUE DE CLIENT PAR JOURS
+// FONCTION STATISTIQUE DE CLIENT PAR mois
 exports.getVisitorByDay = async (req, res) => {
     try {
         const VisitorByDay = await Client.findAll({
