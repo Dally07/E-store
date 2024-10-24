@@ -29,7 +29,7 @@ const Paiement = sequelize.define('Paiement', {
         unique: true
     },
     statut: {
-        type: DataTypes.ENUM('En attente', 'Complété', 'Échoué', 'Remboursé'),
+        type: DataTypes.ENUM('En attente', 'Complété', 'Non payer', 'Remboursé'),
         defaultValue: 'En attente'
     },
     date_paiement: {

@@ -1,6 +1,11 @@
 const Paiement = require('../models/paiement');
 const Commande = require('../models/commande');
-
+const Produit = require('../models/produits');
+const ConfigurationPC = require('../models/config_pc');
+const ConfigurationImprimante = require('../models/config_imprimante');
+const ConfigurationTelephone = require('../models/config_telephone');
+const ConfigurationAccessoire = require('../models/config_accessoire');
+const Client = require('../models/client');
 // Traitement du paiement
 // Récupérer les détails d'un paiement
 exports.getPaiementDetails = async (req, res) => {
@@ -13,7 +18,21 @@ exports.getPaiementDetails = async (req, res) => {
                 {
                     model: Commande,
                     as: 'commande',
-                    attributes: ['idCommande', 'total', 'statut']
+                    attributes: ['idCommande', 'total', 'statut'], include: [
+                        {
+                            model: Produit,
+                            as: 'produits',
+                            include: [
+                                { model: ConfigurationPC, as: 'configPC' },
+                                { model: ConfigurationImprimante, as: 'configImprimante' },
+                                { model: ConfigurationTelephone, as: 'configTelephone' },
+                                { model: ConfigurationAccessoire, as: 'configAccessoire' }]
+                        },
+                        {
+                            model: Client, 
+                            as: 'client'
+                        }
+                    ]
                 }
             ]
         });
@@ -99,3 +118,34 @@ exports.processPaiement = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors du traitement du paiement', error });
     }
 };
+
+exports.getAllPaiements = async (req, res) => {
+    try {
+      const paiements = await Paiement.findAll({
+        include:  [
+            {
+                model: Commande,
+                as: 'commande',
+                attributes: ['idCommande', 'total', 'statut'], include: [
+                    {
+                        model: Produit,
+                        as: 'produits',
+                        include: [
+                            { model: ConfigurationPC, as: 'configPC' },
+                            { model: ConfigurationImprimante, as: 'configImprimante' },
+                            { model: ConfigurationTelephone, as: 'configTelephone' },
+                            { model: ConfigurationAccessoire, as: 'configAccessoire' }]
+                    },
+                    {
+                        model: Client, 
+                        as: 'client'
+                    }
+                ]
+            }
+        ]
+    });
+      res.status(200).json(paiements);
+    } catch (error) {
+      res.status(500).json({ message: 'Erreur lors de la récupération des paiements', error });
+    }
+  };

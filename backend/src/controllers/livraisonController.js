@@ -1,7 +1,12 @@
 const Commande = require('../models/commande');
 const Livraison = require('../models/livraison');
 const Client = require('../models/client')
-const Paiement = require('../models/paiement')
+const Paiement = require('../models/paiement');
+const Produit = require('../models/produits');
+const ConfigurationPC = require('../models/config_pc');
+const ConfigurationImprimante = require('../models/config_imprimante');
+const ConfigurationTelephone = require('../models/config_telephone');
+const ConfigurationAccessoire = require('../models/config_accessoire');
 
 
 
@@ -84,8 +89,16 @@ exports.getLivraisonById = async (req, res) => {
                 {
                     model: Commande,
                     
-                    attributes: ['idCommande', 'date_commande'], 
                     include: [
+                        {
+                            model: Produit,
+                            as: 'produits',
+                            include: [
+                                { model: ConfigurationPC, as: 'configPC' },
+                                { model: ConfigurationImprimante, as: 'configImprimante' },
+                                { model: ConfigurationTelephone, as: 'configTelephone' },
+                                { model: ConfigurationAccessoire, as: 'configAccessoire' }]
+                        },
                         {
                             model: Client,
                             as: 'client',

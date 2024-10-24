@@ -7,6 +7,7 @@ const Client = require('./client');
 const Commande = require('./commande');
 const commande_produit = require('./commande_produit')
 const Paiement = require('./paiement')
+const Livraison = require('./livraison')
 
 // Associer ConfigurationPC à Produit
 Produit.hasOne(ConfigurationPC, {
@@ -59,11 +60,16 @@ Produit.belongsToMany(Commande, { through: commande_produit, foreignKey: 'produi
 
 // association paiment et commande
 Commande.hasMany(Paiement, {
-    foreignKey: 'commade_id',
+    foreignKey: 'commande_id',
     as: 'paiement'
 });
 
+//commande et paiement
 Paiement.belongsTo(Commande, {
     foreignKey: 'commande_id',
     as: 'commande'
-})
+});
+
+Commande.hasMany(Livraison, {
+    foreignKey: 'commande_id', onDelete: 'CASCADE'
+});
