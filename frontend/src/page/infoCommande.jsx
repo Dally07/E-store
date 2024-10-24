@@ -388,7 +388,7 @@ const InfoCommande = () => {
 
             {/* Reste du contenu */}
             <div className=" p-4 rounded-lg mb-0 border-b-2 border-gray" style={{backgroundColor: "#041122"}}>
-              <h3 className="text-lg font-bold border-b-2 py-2 border-gray">Articles à commander (1)</h3>
+              <h3 className="text-lg font-bold border-b-2 py-2 border-gray">Articles à commander ({commande.produits.length})</h3>
               {commande.produits.map((produit, index) => (
         <div key={index} className="flex justify-between items-center p-4 rounded-lg mt-4" style={{backgroundColor: "#041122"}}>
           <div className="flex items-center">

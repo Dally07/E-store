@@ -10,17 +10,33 @@ const ConfigurationAccessoire = require('../models/config_accessoire');
 const { sequelize } = require('../config/db');
 
 
-// FONCTION STATISTIQUE GENERALE
+// FONCTION STATISTIQUE GENERALE (avec option par mois)
 exports.getStat = async (req, res) => {
-    try {
-        const totalRevenue = await Commande.sum('total');
-        const totalOrders = await Commande.count();
-        const totalClient = await Client.count();
-        const totalVisitor = await Utilisateur.count();
+    const { month, year } = req.query; // Récupérer les paramètres de mois et d'année
 
-        res.status(200).json({totalRevenue, totalOrders, totalClient, totalVisitor});
+    try {
+        // Si les paramètres de mois et d'année sont fournis, on filtre par date
+        let whereClause = {};
+        if (month && year) {
+            const startDate = new Date(year, month, 1)
+            const endDate = new Date(year, parseInt(month) + 1, 0)
+            whereClause = {
+                createdAt: {
+                    [Op.between]: [startDate, endDate]
+                }
+            };
+        }
+
+        // Calcul des statistiques
+        const totalRevenue = await Commande.sum('total', { where: whereClause });
+        const totalOrders = await Commande.count({ where: whereClause });
+        const totalClient = await Client.count({ where: whereClause });
+        const totalVisitor = await Utilisateur.count({ where: whereClause }); 
+
+        // Retourner les statistiques
+        res.status(200).json({ totalRevenue, totalOrders, totalClient, totalVisitor });
     } catch (error) {
-        res.status(500).json({ message: 'Erreur lors de la recuperation des statistique', error});
+        res.status(500).json({ message: 'Erreur lors de la récupération des statistiques', error });
     }
 };
 
@@ -168,7 +184,14 @@ exports.getLowStockProducts = async (req, res) => {
                 quantite_en_stock: {
                     [Op.lte]: 10 // Opérateur Sequelize pour "moins que ou égal"
                 }
-            }
+            },
+            limit: 5,
+            include: [
+                { model: ConfigurationPC, as: 'configPC' },
+                { model: ConfigurationImprimante, as: 'configImprimante' },
+                { model: ConfigurationTelephone, as: 'configTelephone' },
+                { model: ConfigurationAccessoire, as: 'configAccessoire' }
+            ]
         });
 
         // Vérification s'il y a des produits trouvés
@@ -184,6 +207,7 @@ exports.getLowStockProducts = async (req, res) => {
     }
 };
 
+// AFFICHER LES TOP 5 DU CLIENT
 exports.topClients = async (req, res) => {
     try {
       const topClients = await sequelize.query(
