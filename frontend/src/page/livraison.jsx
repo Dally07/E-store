@@ -12,7 +12,6 @@ const Livraison = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [LivraisonParPage, setLivraisonePerPage] = useState(10);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [startDate, setStartDate] = useState('');
  const [endDate, setEndDate] = useState('');
  const [livraison, setLivraison] = useState([]);
@@ -36,20 +35,15 @@ const Livraison = () => {
       const response = await axios.get('http://localhost:3001/api/livraison/');
       setLivraison(response.data);
       console.log(response);
-      console.log(response.data)
-    
+      console.log(response.data)   
     }catch (error) {
-      console.error('erreur lors de la recuperation des commandes', error)
-    }
-    
+      console.error('erreur lors de la recuperation des livraison', error)
+    }   
   };
   fetchCommande();
 }, []);
 
- 
 
-
-  
   // Fonction pour filtrer les factures selon le terme de recherche
   const filteredLivraison = livraison.filter(livraison => {
    
@@ -235,10 +229,6 @@ const Livraison = () => {
     </div>
   </div>
 )}
-
-
-
-
         </div>
       </div>
     </div>
