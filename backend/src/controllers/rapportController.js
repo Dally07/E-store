@@ -19,9 +19,9 @@ exports.getNombreVenteParJour = async (req, res) => {
     try {
         // Créer une date de début et de fin pour le jour sélectionné
         const startDate = new Date(day);
-        startDate.setHours(3, 0, 0, 0); // Début de la journée
+        startDate.setHours(0 +3, 0, 0, 0); // Début de la journée
         const endDate = new Date(day);
-        endDate.setHours(26, 59, 59, 999); // Fin de la journée
+        endDate.setHours(23 +3, 59, 59, 999); // Fin de la journée
 
         // Clause WHERE pour filtrer par date
         const whereClause = {
@@ -52,9 +52,9 @@ exports.getProduitsVendusParJourParCategorie = async (req, res) => {
     try {
         // Créer une date de début et de fin pour le jour sélectionné
         const startDate = new Date(day);
-        startDate.setHours(3, 0, 0, 0); // Début de la journée
+        startDate.setHours(0 +3, 0, 0, 0); // Début de la journée
         const endDate = new Date(day);
-        endDate.setHours(26, 59, 59, 999); // Fin de la journée
+        endDate.setHours(23 +3, 59, 59, 999); // Fin de la journée
 
         // Clause WHERE pour filtrer par date
         const whereClause = {
@@ -104,9 +104,9 @@ exports.getModePaiement = async (req, res) => {
     try {
         // Créer une date de début et de fin pour le jour sélectionné
         const startDate = new Date(day);
-        startDate.setHours(3, 0, 0, 0); // Début de la journée
+        startDate.setHours(0 +3, 0, 0, 0); // Début de la journée
         const endDate = new Date(day);
-        endDate.setHours(26, 59, 59, 999); // Fin de la journée
+        endDate.setHours(23 +3, 59, 59, 999); // Fin de la journée
 
         // Clause WHERE pour filtrer par date
         const whereClause = {
@@ -156,9 +156,9 @@ exports.afficherLeMeilleurClient = (req, res) => {
     }
 
     const startDate = new Date(day);
-    startDate.setHours(3, 0, 0, 0); // Début de la journée
+    startDate.setHours(0 +3, 0, 0, 0); // Début de la journée
     const endDate = new Date(day);
-    endDate.setHours(26, 59, 59, 999); // Fin de la journée
+    endDate.setHours(23 +3, 59, 59, 999); // Fin de la journée
 
     Commande.findOne({
         attributes: [
