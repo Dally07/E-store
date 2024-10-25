@@ -113,7 +113,7 @@ const Rapport = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-3 gap-6 mb-6">
             {/* Total des commandes */}
             <div className="p-6 rounded-lg" style={{ backgroundColor: '#041122' }}>
               <h3 className="text-white font-bold">Total des Commandes</h3>
@@ -125,12 +125,11 @@ const Rapport = () => {
               <h3 className="text-white font-bold">Revenu Total</h3>
               <p className="text-4xl text-white mt-4">{rapport.totalRevenue} MGA</p>
             </div>
-          </div>
-
-          {/* Graphique des revenus quotidiens */}
-          <div className="p-6 rounded-lg mb-6" style={{ backgroundColor: '#041122' }}>
-            <h3 className="text-white font-bold mb-4">Revenus Quotidiens</h3>
-            <Bar data={dataRevenus} />
+            {/* client commande */}
+            <div className="p-6 rounded-lg" style={{ backgroundColor: '#041122' }}>
+              <h3 className="text-white font-bold">Revenu Total</h3>
+              <p className="text-4xl text-white mt-4">{rapport.totalRevenue} MGA</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">

@@ -54,9 +54,9 @@ Config_Imprimante.belongsTo(Produit, {
 Client.hasMany(Commande, { foreignKey: 'client_id', as: 'commandes'});
 Commande.belongsTo(Client, { foreignKey: 'client_id', as: 'client'});
 
-// association commande et produit
-Commande.belongsToMany(Produit, { through: commande_produit, foreignKey: 'commande_id',  as: 'produits'});
-Produit.belongsToMany(Commande, { through: commande_produit, foreignKey: 'produit_id', as: 'commandes'});
+    // association commande et produit
+    Commande.belongsToMany(Produit, { through: commande_produit, foreignKey: 'commande_id',  as: 'produits'});
+    Produit.belongsToMany(Commande, { through: commande_produit, foreignKey: 'produit_id', as: 'commandes'});
 
 // association paiment et commande
 Commande.hasMany(Paiement, {
