@@ -150,6 +150,19 @@ const InfoCommande = () => {
         case 'Annulée' : return 'bg-gray-500';
       }
      }
+
+     const formatDate = (dateString) => {
+
+  const date = new Date(dateString);
+  if (isNaN(date)) {
+    return '';
+  }
+  const day = String(date.getDate());
+  const month = String(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+ };
     
 
     const createFact = () => {
@@ -224,10 +237,6 @@ const InfoCommande = () => {
                 {/* Contenu de la modal */}
                 <div className="text-white">
                 <h4 className="font-bold mb-2" onChange={(e) => setCommandeId}>commande #{commande.idCommande}</h4>
-                <p>adresse</p>
-
-                  <h4 className="font-bold mb-2">Adresse de livraison</h4>
-                  <p>{}</p>
                   
                   <div className='flex mt-4'>
                     <div>
@@ -253,7 +262,20 @@ const InfoCommande = () => {
 
                   
                   </div>
-
+                <div className='flex'>
+                  <div>
+                  <h4 className="font-bold mt-4 mb-2">Vehicule</h4>
+                  <input 
+                    type="text" 
+                    name="nom" 
+                    className="w-full p-2 text-black rounded-md mb-4"
+                    placeholder="Vehicule"
+                    value={vehicule}
+            onChange={(e) => setVehicule(e.target.value)}
+            required
+                  />
+                  </div>
+                  <div className='ml-4'>
                   <h4 className="font-bold mt-4 mb-2">Nom du livreur</h4>
                   <input 
                     type="text" 
@@ -261,9 +283,12 @@ const InfoCommande = () => {
                     className="w-full p-2 text-black rounded-md mb-4"
                     placeholder="Nom du livreur"
                     value={telephoneLivreur}
-            onChange={(e) => setTelephoneLivreur(e.target.value)}
+            onChange={(e) => setNomLivreur(e.target.value)}
             required
                   />
+                  </div>
+                </div>
+                  
 
                   
                   <div className='flex'> 
@@ -282,20 +307,12 @@ const InfoCommande = () => {
                           <input type="text" name="voiture" 
                                   className="w-full p-2 text-black rounded-md mb-4"
                                   placeholder="Tel"
-                                  value={vehicule}
-            onChange={(e) => setVehicule(e.target.value)}
+                                  value={telephoneLivreur}
+            onChange={(e) => setTelephoneLivreur(e.target.value)}
             required
                           />
                     </div>
                   </div>
-
-
-                  <h4 className="font-bold mt-4 mb-2">Mode de paiement</h4>
-                  <p>{}</p>
-                </div>
-                <div className="text-white">
-                  <h4 className="font-bold mb-2">Adresse de livraison</h4>
-                  <p>{}</p>
                   
 
                   <div className="mt-6">
@@ -318,7 +335,6 @@ const InfoCommande = () => {
                        ) :(
                         <p>aucunre configuration</p>
                        ) }
-                      <p><span className="font-bold">Quantité : </span>{}</p>
                       <p><span className="font-bold">Prix : </span>{produit.prix}</p>
                     </div>
                     

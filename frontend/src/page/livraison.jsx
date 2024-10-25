@@ -99,8 +99,9 @@ const Livraison = () => {
         <div className="flex-1 overflow-y-auto p-6 pt-20 pl-64 ml-6 mb-6" style={{ backgroundColor: '#030C1B' }}>
           <div className="p-4 mb-6">
             <div className="flex justify-between mb-6 text-white">
-              <h2 className="text-2xl font-bold mb-2">Liste des Livraison</h2>
+            <div></div>
               <div className="flex items-center">
+                
                 <button onClick={exportExcel} className="flex items-center px-4 py-2 ml-2 text-white rounded-lg">
                   <FaFileExport />
                   <p className="ml-2">Exporter</p>
@@ -111,24 +112,11 @@ const Livraison = () => {
 
             {/* Search and filter section */}
             <div className="flex justify-between items-center mb-2 text-white">
-              <div className="flex items-center rounded-md" style={{ backgroundColor: '#041122' }}>
-                <input
-                  type="text"
-                  placeholder="recherche"
-                  className="w-[300px] p-2 rounded focus:outline-none text-gray-100"
-                  style={{ backgroundColor: '#041122' }}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)} // Met à jour l'état de recherche
-                />
-                <FaSearch className="text-gray-400 mr-2" />
+              <div className="flex items-center rounded-md" >
+              <h2 className="text-2xl font-bold mb-2">Liste des Livraison</h2>
               </div>
               <span>{filteredLivraison.length} résultats</span> {/* Affiche le nombre de résultats */}
               <div className="flex ml-6">
-              <button
-                    onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center px-4 py-2 text-white rounded-lg">
-                      <FaFilter /> Filtrer
-              </button>
                 <select className='p-2 rounded text-white'
                 style={{ backgroundColor: '#041122' }} 
                 value={LivraisonParPage}
@@ -186,10 +174,10 @@ const Livraison = () => {
                       
                     </td>
                     <td className="py-2 px-4">  
-                      <span className={`text-white rounded`}>{new Date(livraison.heure_depart).toLocaleString()}</span>
+                      <span className={`text-white rounded`}>{formatDate(livraison.heure_depart)}</span>
                     </td>
                     <td className="py-2 px-4">  
-                      <span className=" text-white-500">{new Date(livraison.heure_arrivee).toLocaleString()}</span>
+                      <span className=" text-white-500">{formatDate(livraison.heure_arrivee)}</span>
                     </td>
                     
                     <td className=" py-2 px-4 ">
@@ -210,7 +198,7 @@ const Livraison = () => {
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
     <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
       <div className="flex justify-between mb-6">
-        <h2 className="text-white">Filtrer les Factures</h2>
+        <h2 className="text-white">Filtrer les date de livraison</h2>
         <button onClick={() => setIsFilterModalOpen(false)} className="text-white">
           <FaWindowClose />
         </button>

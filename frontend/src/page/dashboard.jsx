@@ -427,7 +427,7 @@ useEffect(() => {
             {/* Section for Recent Orders and Customers Analysis */}
               <div className="w-2/3 mb-4 bg-gray-800 p-4 rounded-md h-full" style={{ backgroundColor: "#041122" }}>
       <div className='flex justify-between'>
-      <h2 className="text-xl font-bold mb-4">Recent Orders</h2>
+      <h2 className="text-xl font-bold mb-4">Commande recente</h2>
       <Link to="/commande">
       <h2 className="text-xl font-bold mb-4 cursor-pointer text-blue-500">voir tout</h2>
       </Link>
@@ -485,7 +485,7 @@ useEffect(() => {
             <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-white text-white p-4 rounded-md" style={{backgroundColor: "#041122"}}>
             <div className='flex justify-between'>
-              <div><h3 className="text-xl font-semibold mb-4">Commande recente</h3></div>
+              <div><h3 className="text-xl font-semibold mb-4">Client les plus de vente</h3></div>
               <div className='p-2 rounded-lg font-semibold cursor-pointe bleu_backgroundr'><h6>Voir tout</h6></div>    
             </div>
               <table className="w-full text-left text-gray">

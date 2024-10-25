@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
-import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEye, FaFilter } from 'react-icons/fa';
+import { FaFileExport, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEye, FaFilter } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Link } from 'react-router-dom';
@@ -43,10 +43,10 @@ const Commande = () => {
 
  const getBackgroundPayement = (statut) => {
   switch(statut) {
-    case 'En attente' : return 'bg-yellow-500';
-    case 'Complété' : return 'bg-blue-900';
-    case 'Non payer' : return 'bg-red-800';
-    case 'Remboursé' : return 'bg-gray-500';
+    case 'En attente' : return 'text-yellow-500';
+    case 'Complété' : return 'text-green-500';
+    case 'Non payer' : return 'text-red-500';
+    case 'Remboursé' : return 'text-gray-500';
   }
  }
 
@@ -251,9 +251,9 @@ const Commande = () => {
       </div>
 
       <div>
-        <label className="text-white">Statut</label>
+        <label className="text-white">Statut : </label>
         <select
-          className="w-full p-2 rounded bg-gray-700 text-white"
+          className="w- p-2 rounded bg-gray-700 text-white"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -265,25 +265,7 @@ const Commande = () => {
         </select>
       </div>
 
-      <div className="flex mt-4">
-        <div>
-        <label className="text-white">Debut</label>
-        <input type="date" 
-        className="w-full p-2 rounded bg-gray-700 text-white"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}/>
-        </div>
-            
-            <div className='ml-2'>
-            <label className="text-white">Fin</label>
-        <input type="date" 
-        className="w-full p-2 rounded bg-gray-700 text-white"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}/>
-            </div>
-        
-      </div>
-
+      
       <button
         onClick={() => {
           setIsFilterModalOpen(false);
