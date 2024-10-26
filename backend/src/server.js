@@ -1,5 +1,12 @@
 const app = require('./app');
 const { sequelize } = require('./config/db');
+const http = require('http');
+const socketIo = require('socket.io');
+const server = http.createServer(app);
+const io = socketIo(server);
+
+const commandeRoutes = require('./routes/commandeRoutes')(io);
+app.use('/api/commande', commandeRoutes);
 
 const Utilisateur = require('./models/utilisateur');
 const Client = require('./models/client');
@@ -16,9 +23,25 @@ const Config_Telephone = require('./models/config_telephone');
 const Config_Pc = require('./models/config_pc');
 const Panier_Produit = require('./models/Panier_Produit');
 const Livraison = require('./models/livraison');
-
-
 require('./models/association');
+
+
+
+// Lorsqu'un client se connecte
+io.on('connection', (socket) => {
+    console.log('Un utilisateur est connecté');
+
+    // Événement pour une nouvelle commande
+    socket.on('newOrder', (orderData) => {
+        // Diffuse l'événement à tous les clients connectés
+        io.emit('newOrderNotification', orderData);
+    });
+
+    // Lorsqu'un client se déconnecte
+    socket.on('disconnect', () => {
+        console.log('Un utilisateur est déconnecté');
+    });
+});
 
 
 
@@ -28,7 +51,7 @@ sequelize.sync({
     force: false
 }).then( () => {
     console.log('base de donnees connecte et synchroniser...');
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log('le serveur est en marche sur le port', PORT);
     });
 }).catch(err => {

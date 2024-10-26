@@ -3,7 +3,7 @@ import axios from 'axios';
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
 import { FaPrint, FaVoicemail } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const InfoLivraison = () => {
   const {idLivraison} = useParams();
@@ -55,9 +55,12 @@ const { client, paiement } = Commande || {};
                     
                 </div>
                 <div>
-                    <button className="flex items-center px-4 py-2 bg-red-800 text-white rounded-lg">
+                  <Link to="/livraison">
+                  <button className="flex items-center px-4 py-2 bg-red-800 text-white rounded-lg">
                     <p className="ml-2">Retour</p>
-              </button>
+                  </button>
+                  </Link>
+                   
                 </div>
               
               

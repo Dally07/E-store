@@ -189,9 +189,12 @@ const InfoCommande = () => {
                 </div>
               </div>
               <div>
+                <Link  to="/commande">
                 <button className="flex items-center px-4 py-2 bg-red-800 text-white rounded-lg">
                   <p className="ml-2">Retour</p>
                 </button>
+                </Link>
+                
               </div>
             </div>
 

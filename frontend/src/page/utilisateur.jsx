@@ -2,7 +2,7 @@ import React, {useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../composant/Header/header';
 import Sidebar from '../composant/sidebar/sidebar';
-import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaFilter, FaEdit,  FaTrash } from 'react-icons/fa';
+import { FaFileExport, FaPlus, FaSearch, FaWindowClose,  FaAngleLeft, FaAngleRight, FaEdit,  FaTrash } from 'react-icons/fa';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -11,7 +11,6 @@ const Utilisateur = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [usersParPage, setusersPerPage] = useState(10);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedNameSort, setSelectedNameSort] = useState('');
   const [selectedIdSort, setSelectedIdSort] = useState('');
@@ -219,11 +218,6 @@ const filteredUsers = users
               </div>
               <span>{filteredUsers.length} résultats</span> {/* Affiche le nombre de résultats */}
               <div className="flex ml-6">
-              <button
-                    onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center px-4 py-2 text-white rounded-lg">
-                      <FaFilter /> Filtrer
-              </button>
                 <select className='p-2 rounded text-white'
                 style={{ backgroundColor: '#041122' }} 
                 value={usersParPage}
@@ -364,72 +358,6 @@ const filteredUsers = users
           </div>
         </div>
       )}
-
-          {/* modal filtrer */}
-          {isFilterModalOpen && ( 
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-    <div className="bg-blue-900 p-6 rounded-lg" style={{ backgroundColor: '#041130' }}>
-      <div className="flex justify-between mb-6">
-        <h2 className="text-white">Filtrer les utilisateurs</h2>
-        <button onClick={() => setIsFilterModalOpen(false)} className="text-white">
-          <FaWindowClose />
-        </button>
-      </div>
-
-      <div>
-        <label className="text-white">Rôles</label>
-        <select
-          className="w-full p-2 rounded bg-gray-700 text-white"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">Tous</option>
-          <option value="Administrateur">Administrateur</option>
-          <option value="Gestionnaire des commandes">Gestionnaire des commandes</option>
-          <option value="Gestionnaire des produits">Gestionnaire des produits</option>
-        </select>
-      </div>
-
-      <div className="mt-4">
-        <label className="text-white">Trier par Nom</label>
-        <select
-          className="w-full p-2 rounded bg-gray-700 text-white"
-          value={selectedNameSort}
-          onChange={(e) => setSelectedNameSort(e.target.value)}
-        >
-          <option value="">Aucun tri</option>
-          <option value="name_asc">Nom croissant</option>
-          <option value="name_desc">Nom décroissant</option>
-        </select>
-      </div>
-
-      <div className="mt-4">
-        <label className="text-white">Trier par ID</label>
-        <select
-          className="w-full p-2 rounded bg-gray-700 text-white"
-          value={selectedIdSort}
-          onChange={(e) => setSelectedIdSort(e.target.value)}
-        >
-          <option value="">Aucun tri</option>
-          <option value="id_asc">ID croissant</option>
-          <option value="id_desc">ID décroissant</option>
-        </select>
-      </div>
-
-      <button
-        onClick={() => {
-          setIsFilterModalOpen(false);
-        }}
-        className="mt-4 bg-red-600 px-4 py-2 rounded text-white"
-      >
-        Valider
-      </button>
-    </div>
-  </div>
-)}
-
-
-
         </div>
       </div>
     </div>

@@ -1,19 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const {Socket, Server} = require('socket.io');
+
 
 
 const app = express();
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
-const commandeRoutes = require('./routes/commandeRoutes');
+
 const livraisonRoutes = require('./routes/livraisonRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const dashbordRoutes = require('./routes/routesDashboard');
 const rapportRoutes = require('./routes/rapportRoutes');
 const bodyParser = require('body-parser');
 const paiementRoutes = require('./routes/paiementRoutes');
-const clientRoutes = require('./routes/clientsRoutes')
+const clientRoutes = require('./routes/clientsRoutes');
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -24,7 +28,7 @@ app.use('/profil', express.static('profil'));
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/commande', commandeRoutes);
+
 app.use('/api/livraison', livraisonRoutes);
 app.use('/api/recherche', searchRoutes);
 app.use('/api/stat', dashbordRoutes);

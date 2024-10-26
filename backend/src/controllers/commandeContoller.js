@@ -8,10 +8,12 @@ const ConfigurationTelephone = require('../models/config_telephone');
 const ConfigurationAccessoire = require('../models/config_accessoire');
 const  {sequelize }  = require('../config/db');
 const { envoyerNotification } = require('../utils/notificationUtil');
+const Notification = require('../models/notification');
+const Utilisateur = require('../models/utilisateur');
+const { Op } = require('sequelize');
 
-console.log('mandeha');
 
-exports.passerCommande = async (req, res) => {
+exports.passerCommande = async (req, res, io) => {
     const transaction = await sequelize.transaction();
 
     try {
@@ -80,10 +82,31 @@ exports.passerCommande = async (req, res) => {
         // Valider la transaction
         await transaction.commit();
 
+        const administrateur = await Utilisateur.findAll({
+            where: {role:{[Op.or]:['Administrateur', 'Gestionnaire des commandes']} }
+        });
+        if (!administrateur) {
+            return res.status(400).json({ message: error.message });
+        }
+
+        const message = `Nouvelle commandepasse par le client ${clientId}`;
+        for (const utilisateur of administrateur) {
+            await Notification.create({
+                utilisateur_id: utilisateur.idUtilisateur,
+                message: message,
+                statut: 'non lu'
+            })
+        }
+
+        
+        io.emit('newOrderNotification', {message});
+
         return res.status(201).json({
             message: 'Commande et paiement effectués avec succès',
             commande: nouvelleCommande
         });
+
+
     } catch (error) {
         console.error('erreur lors de passege de commande:', error)
         // Annuler la transaction en cas d'erreur
@@ -169,10 +192,12 @@ exports.getCommandeDetails = async (req, res) => {
     }
   };
 
-  exports.cancelCommande = async (req, res) => {
+  exports.cancelCommande = async (req, res, io) => {
     try {
         const { idCommande } = req.params;
+        const userId = req.user.id;
         console.log(idCommande)
+        console.log(req.user)
 
         // Rechercher la commande par son ID
         const commande = await Commande.findByPk(idCommande);
@@ -191,6 +216,32 @@ exports.getCommandeDetails = async (req, res) => {
             { statut: 'Annulée' },
             { where: { idCommande: idCommande } }
         );
+
+        //const messageClient = `Votre commande #${idCommande} est Annulée `;
+       
+       // await envoyerNotification(commande.client_id, messageClient);
+        //io.emit(`notificationClient-${commande.client_id}`, {message: messageClient});
+
+        const messageAdmin = `l'utilisateur #${userId} a annulé la commande #${idCommande} pour le client #${commande.client_id}.`;
+        const administrateur = await Utilisateur.findAll({
+            where: {role:'Administrateur' }
+        });
+        if (!administrateur) {
+            return res.status(400).json({ message: error.message });
+        }
+
+      
+        for (const utilisateur of administrateur) {
+            await Notification.create({
+                utilisateur_id: utilisateur.idUtilisateur,
+                message: messageAdmin,
+                statut: 'non lu'
+            });
+            io.emit(`notificationAdmin-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
+        }
+
+        
+        
 
         res.status(200).json({ message: 'Commande annulée avec succès' });
     } catch (error) {

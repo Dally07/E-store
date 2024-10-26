@@ -102,12 +102,6 @@ const handleImageChange = (e) => {
                   <FaFileExport />
                   <p className="ml-2">Exporter</p>
                 </button>
-                
-                  
-                <button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 ml-2 bg-red-800 text-white rounded-lg">
-                  <FaPlus />
-                  <p className="ml-2">Créer un Client</p>
-                </button>
               </div>
             </div>
 
@@ -126,11 +120,6 @@ const handleImageChange = (e) => {
               </div>
               <span>{filteredUsers.length} résultats</span> {/* Affiche le nombre de résultats */}
               <div className="flex ml-6">
-              <button
-                    onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center px-4 py-2 text-white rounded-lg">
-                      <FaFilter /> Filtrer
-              </button>
                 <select className='p-2 rounded text-white'
                 style={{ backgroundColor: '#041122' }} 
                 value={usersParPage}
