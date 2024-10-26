@@ -5,12 +5,16 @@ const ConfigurationTelephone = require('../models/config_telephone');
 const ConfigurationAccessoire = require('../models/config_accessoire');
 const productService = require('../services/productService');
 const { Op } = require('sequelize');
+const Utilisateur = require('../models/utilisateur');
+const Notification = require('../models/notification');
 
 // cree un produit
-exports.createProduct = async (req, res) => {
+exports.createProduct = async (req, res, io) => {
     try {
         const { nom, description, prix, quantite_en_stock, categorie, reference, couleurs_disponibles, configuration } = req.body;
         const photo1 = req.file ? req.file.filename : null; 
+        const userId = req.user.id;
+        
         
         console.log('donne', req.body)
 
@@ -82,6 +86,28 @@ exports.createProduct = async (req, res) => {
             });
             console.log('ito',config);
         }
+
+        const idProduit = newProduct.idProduit;
+        console.log(idProduit);
+
+        const messageAdmin = `l'utilisateur #${userId} a ajouter une produit`;
+        const administrateur = await Utilisateur.findAll({
+            where: {role:'Administrateur' }
+        });
+        if (!administrateur) {
+            return res.status(400).json({ message: error.message });
+        }
+
+      
+        for (const utilisateur of administrateur) {
+            await Notification.create({
+                utilisateur_id: utilisateur.idUtilisateur,
+                message: messageAdmin,
+                statut: 'non lu'
+            });
+            io.emit(`notificationAdmin-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
+        }
+
 
         res.status(201).json(newProduct);
     } catch (error) {
@@ -158,13 +184,13 @@ exports.getProductById = async (req, res) => {
 };
 
 // mettre a jour un produit
-exports.updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res, io) => {
     try {
         const productId = req.params.id;
         const product = await Produit.findByPk(productId);
         const { nom, description, prix, quantite_en_stock, categorie, reference, couleurs_disponibles, configuration } = req.body;
         const photo1 = req.file ? req.file.filename : product.photo1;
-        
+        const userId = req.user.id;
         
 
         if (!product) {
@@ -234,6 +260,24 @@ exports.updateProduct = async (req, res) => {
                 compatibilite: config.compatibilite,
                 marque: config.marque
             }, { where: { produit_id: productId } });
+        }
+
+        const messageAdmin = `l'utilisateur #${userId} a modifier le produit #${productId}`;
+        const administrateur = await Utilisateur.findAll({
+            where: {role:'Administrateur' }
+        });
+        if (!administrateur) {
+            return res.status(400).json({ message: error.message });
+        }
+
+      
+        for (const utilisateur of administrateur) {
+            await Notification.create({
+                utilisateur_id: utilisateur.idUtilisateur,
+                message: messageAdmin,
+                statut: 'non lu'
+            });
+            io.emit(`notificationAdmin-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
         }
 
         res.status(200).json(updatedProduct);

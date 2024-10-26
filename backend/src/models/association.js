@@ -7,7 +7,9 @@ const Client = require('./client');
 const Commande = require('./commande');
 const commande_produit = require('./commande_produit')
 const Paiement = require('./paiement')
-const Livraison = require('./livraison')
+const Livraison = require('./livraison');
+const Utilisateur = require('./utilisateur');
+const Notification = require('./notification');
 
 // Associer ConfigurationPC à Produit
 Produit.hasOne(ConfigurationPC, {
@@ -73,3 +75,8 @@ Paiement.belongsTo(Commande, {
 Commande.hasMany(Livraison, {
     foreignKey: 'commande_id', onDelete: 'CASCADE'
 });
+
+// Association : chaque notification appartient à un utilisateur
+Notification.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id', as: 'utilisateur' });
+
+Utilisateur.hasMany(Notification, { foreignKey: 'utilisateur_id', as: 'notifications' });

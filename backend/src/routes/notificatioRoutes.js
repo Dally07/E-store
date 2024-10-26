@@ -1,18 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Notification = require('../models/notification');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const notificationController = require('../controllers/notificationController');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 // Récupérer les notifications pour un utilisateur
-router.get('/', authMiddleware, async (req, res) => {
-    try {
-        const notifications = await Notification.findAll({
-            where: { utilisateurId: req.user.idUtilisateur, statut: 'non lu' }
-        });
-        res.status(200).json(notifications);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+router.get('/notifications', authMiddleware, notificationController.getAllNotifications);
+router.get('/notifications/:idNotification', authMiddleware, notificationController.getNotificationById);
+router.put('/notifications/:idNotification/vue',authMiddleware, notificationController.marquerCommeVu);
 
 module.exports = router;

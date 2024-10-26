@@ -7,7 +7,7 @@ const {Socket, Server} = require('socket.io');
 
 const app = express();
 const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes');
+
 
 const livraisonRoutes = require('./routes/livraisonRoutes');
 const searchRoutes = require('./routes/searchRoutes');
@@ -27,7 +27,7 @@ app.use('/profil', express.static('profil'));
 
 
 app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
+
 
 app.use('/api/livraison', livraisonRoutes);
 app.use('/api/recherche', searchRoutes);

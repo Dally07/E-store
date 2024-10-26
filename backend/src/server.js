@@ -6,7 +6,11 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 const commandeRoutes = require('./routes/commandeRoutes')(io);
+const productRoutes = require('./routes/productRoutes')(io);
+const notificationRoutes = require('./routes/notificatioRoutes')
 app.use('/api/commande', commandeRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/notification', notificationRoutes);
 
 const Utilisateur = require('./models/utilisateur');
 const Client = require('./models/client');

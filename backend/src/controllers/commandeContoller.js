@@ -89,7 +89,7 @@ exports.passerCommande = async (req, res, io) => {
             return res.status(400).json({ message: error.message });
         }
 
-        const message = `Nouvelle commandepasse par le client ${clientId}`;
+        const message = `Nouvelle commande passer par le client ${clientId}`;
         for (const utilisateur of administrateur) {
             await Notification.create({
                 utilisateur_id: utilisateur.idUtilisateur,
