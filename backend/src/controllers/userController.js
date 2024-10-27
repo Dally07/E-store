@@ -13,6 +13,7 @@ exports.register = async (req, res) => {
 
 // connection
 exports.login = async (req, res) => {
+    console.log(req.user)
     try {
         const { email, mot_de_passe } = req.body;
         const { user, token } = await authService.login(email, mot_de_passe);

@@ -3,17 +3,28 @@ import { FaBars, FaBell, FaCalendarAlt, FaCircle, FaSearch, FaUserCircle } from 
 import logo from '../../assets/COMPUTER LOGO 1.png';
 import axios from 'axios';
 import io from 'socket.io-client'
-import { Navigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
 
 const Header = ({ toggleSidebar }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [user, setUser] = useState({nom: '', photo: ''});
   const API_BASE_URL = 'http://localhost:3001/api/notification';
-  const socket = io('http://localhost:3001', {
-    transports: ["websocket", "polling"],
-    withCredentials: true,
-  });
+  const [socket] = useState(() => io('http://localhost:3001', {
+    reconnectionAttempts: 5,
+    reconnectionDelay: 2000,
+    transport: ["websocket","polling"],
+  }) );
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const decoded = jwtDecode(token);
+    setUser({ nom: decoded.nom, photo: decoded.photo});
+  }
+}, [])
 
   // Fonction pour récupérer toutes les notifications
 useEffect(() => {
@@ -55,31 +66,14 @@ const markNotificationAsRead = async (idNotification) => {
   }
 };
 
-const extractCommandeIdFromMessage = (message) => {
-  if (!message) {
-    console.error('message is undefined');
-  }
-
-  console.log('massage notif', message);
-  const regex = /#(\d+)/;
-  const match = message.match(regex);
-  console.log(match)
-  return match ? match[1] : null;  
-}
 
 
 
   // Marquer une notification comme vue
-  const handleMarkAsRead = async (notif) => {
-    console.log('notification cliquer:', notif)
-    const commandeId = extractCommandeIdFromMessage(notif.message);
-    console.log('commande id extrai:', commandeId)
-    if (commandeId) {
-      Navigate(`/infoCommande/${commandeId}`);
-    }
+  const handleMarkAsRead = async (idNotification) => {
     try {
-      await markNotificationAsRead(notif.idNotification);
-      setNotifications(notifications.map(n => n.idNotification === notif.idNotification ? { ...n, statut: 'Vu' } : n));
+      await markNotificationAsRead(idNotification);
+      setNotifications(notifications.map(n => n.idNotification === idNotification ? { ...n, statut: 'Vu' } : n));
       setUnreadCount(unreadCount - 1);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la notification", error);
@@ -127,7 +121,16 @@ const extractCommandeIdFromMessage = (message) => {
           <span className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-2 text-xs'>{unreadCount}</span>
         )}
         </div>
-        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaUserCircle className="cursor-pointer" /></div> 
+
+        <div className='p-2 shadow-lg rounded-full relative 'style={{ width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          {user.photo ? (
+            <img className='rounded-full w-45 h-full' src={`http://localhost:3001/uploads/${user.photo}`} alt="user" />
+          ) : (
+            <span className='text-White fontbold text-2xl bg-red-800 rounded-full'style={{ width: '50px', height: '33px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              {user.nom.charAt(0).toUpperCase()}
+            </span>
+          )}
+          </div> 
       </div>
 
     {/* Modal des notifications */}
