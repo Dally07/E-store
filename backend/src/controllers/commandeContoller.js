@@ -83,13 +83,14 @@ exports.passerCommande = async (req, res, io) => {
         await transaction.commit();
 
         const administrateur = await Utilisateur.findAll({
+
             where: {role:{[Op.or]:['Administrateur', 'Gestionnaire des commandes']} }
         });
         if (!administrateur) {
             return res.status(400).json({ message: error.message });
         }
 
-        const message = `Nouvelle commande passer par le client ${clientId}`;
+        const message = `Commande numero #${nouvelleCommande.idCommande} passer par le client ${clientId}`;
         for (const utilisateur of administrateur) {
             await Notification.create({
                 utilisateur_id: utilisateur.idUtilisateur,
@@ -99,7 +100,7 @@ exports.passerCommande = async (req, res, io) => {
         }
 
         
-        io.emit('newOrderNotification', {message});
+        io.emit('newOrderNotification', {message, commandeId: nouvelleCommande.commandeId});
 
         return res.status(201).json({
             message: 'Commande et paiement effectués avec succès',

@@ -92,7 +92,7 @@ exports.createProduct = async (req, res, io) => {
 
         const messageAdmin = `l'utilisateur #${userId} a ajouter une produit`;
         const administrateur = await Utilisateur.findAll({
-            where: {role:'Administrateur' }
+            where: {role:['Administrateur'] }
         });
         if (!administrateur) {
             return res.status(400).json({ message: error.message });
@@ -105,7 +105,7 @@ exports.createProduct = async (req, res, io) => {
                 message: messageAdmin,
                 statut: 'non lu'
             });
-            io.emit(`notificationAdmin-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
+            io.emit(`newOrderNotification-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
         }
 
 
@@ -264,7 +264,7 @@ exports.updateProduct = async (req, res, io) => {
 
         const messageAdmin = `l'utilisateur #${userId} a modifier le produit #${productId}`;
         const administrateur = await Utilisateur.findAll({
-            where: {role:'Administrateur' }
+            where: {role: 'Administrateur' }
         });
         if (!administrateur) {
             return res.status(400).json({ message: error.message });
@@ -277,7 +277,7 @@ exports.updateProduct = async (req, res, io) => {
                 message: messageAdmin,
                 statut: 'non lu'
             });
-            io.emit(`notificationAdmin-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
+            io.emit(`newOrderNotification-${Utilisateur.idUtilisateur}`, {message: messageAdmin});
         }
 
         res.status(200).json(updatedProduct);

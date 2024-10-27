@@ -475,18 +475,12 @@ useEffect(() => {
               </div>
       </div>
 
-
-      
-
       {/* Recent Orders */}
-      
-
-
             <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-white text-white p-4 rounded-md" style={{backgroundColor: "#041122"}}>
             <div className='flex justify-between'>
               <div><h3 className="text-xl font-semibold mb-4">Client les plus de vente</h3></div>
-              <div className='p-2 rounded-lg font-semibold cursor-pointe bleu_backgroundr'><h6>Voir tout</h6></div>    
+                 
             </div>
               <table className="w-full text-left text-gray">
                 <thead>
@@ -522,7 +516,10 @@ useEffect(() => {
                       
                     {lowStockProducts.length > 0 ? (
         lowStockProducts.map((product, index) => (
-          <div key={index} className='flex w-full border-2 border-black-900 rounded-lg justify-between mb-4'>
+          
+          <div key={index} className='flex w-full border-2 border-black-900 cursor-pointer justify-between rounded-lg  mb-4'>
+            <Link to={`/creerProduit/${product.idProduit}`}>
+            <div className='flex justify-between w-full mb-4'>
             <div className='p-4'>
               <img src={`http://localhost:3001/uploads/${product.photo1}`} alt={product.nom} className="w-20 h-20 object-cover mr-4" />
             </div>
@@ -547,7 +544,7 @@ useEffect(() => {
               )}
 
               {product.configImprimante && (
-                <p><span className="font-bold">Vitesse : </span>{product.configImprimante.vitesse}</p>
+                <p><span className="font-bold">Vitesse : </span>{product.configImprimante.vitesse_impression}</p>
               )}
 
               {product.configAccessoire && (
@@ -558,12 +555,16 @@ useEffect(() => {
               )}
             </div>
 
-            <div className="p-4 text-center text-2xl rounded-lg">
-              <p className='text-2xl text-center'>
-                <span className="font-bold text-center text-red-700 text-2xl">{product.quantite_en_stock}</span>
+            <div className="p-4 text-6xl rounded-lg">
+              <p className='text-7xl'>
+                <span className="font-bold text-red-700 text-2xl">{product.quantite_en_stock}</span>
               </p>
             </div>
+            </div> 
+            </Link>
           </div>
+         
+          
         ))
       ) : (
         <p>Aucun produit en stock critique pour le moment.</p>

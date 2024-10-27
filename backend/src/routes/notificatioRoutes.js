@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Notification = require('../models/notification');
 const notificationController = require('../controllers/notificationController');
-const { authMiddleware } = require('../middlewares/authMiddleware');
+const { authMiddleware, requireRole } = require('../middlewares/authMiddleware');
 
 // Récupérer les notifications pour un utilisateur
 router.get('/notifications', authMiddleware, notificationController.getAllNotifications);

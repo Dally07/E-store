@@ -25,8 +25,9 @@ exports.marquerCommeVu = async (req, res) => {
 // Méthode pour récupérer toutes les notifications
 exports.getAllNotifications = async (req, res) => {
     try {
+        const userId = req.user.id;
         const notifications = await Notification.findAll({
-            include: { model: Utilisateur,  as: 'utilisateur' }, // Inclut l'utilisateur associé si nécessaire
+            include: { model: Utilisateur,  as: 'utilisateur', where: {idUtilisateur: userId}}, // Inclut l'utilisateur associé si nécessaire
             order: [['createdAt', 'DESC']] // Trie par date de création, de la plus récente à la plus ancienne
         });
         res.status(200).json(notifications);

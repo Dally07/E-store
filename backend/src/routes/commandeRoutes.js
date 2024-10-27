@@ -11,7 +11,7 @@ module.exports = (io) =>  {
 router.get('/:idCommande',  commandeController.getCommandeDetails);
 router.get('/',  commandeController.getAllCommande);
 router.post('/passer-commande', authMiddleware, (req, res) =>  passerCommande(req, res, io) );
-router.put('/:idCommande/annuler', authMiddleware, (req, res) =>  commandeController.cancelCommande(req, res, io));
+router.put('/:idCommande/annuler', authMiddleware,requireRole('Gestionnaire des commandes', 'Administrateur'), (req, res) =>  commandeController.cancelCommande(req, res, io));
 
     return router;
 }

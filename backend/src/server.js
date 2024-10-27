@@ -1,9 +1,16 @@
 const app = require('./app');
 const { sequelize } = require('./config/db');
+const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true
+    }
+});
 
 const commandeRoutes = require('./routes/commandeRoutes')(io);
 const productRoutes = require('./routes/productRoutes')(io);

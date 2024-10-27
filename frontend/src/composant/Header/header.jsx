@@ -1,8 +1,99 @@
-import React from 'react';
-import { FaBars, FaBell, FaCalendarAlt, FaSearch, FaUserCircle } from 'react-icons/fa';
+import React, { useState, useEffect }  from 'react';
+import { FaBars, FaBell, FaCalendarAlt, FaCircle, FaSearch, FaUserCircle } from 'react-icons/fa';
 import logo from '../../assets/COMPUTER LOGO 1.png';
+import axios from 'axios';
+import io from 'socket.io-client'
+import { Navigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const API_BASE_URL = 'http://localhost:3001/api/notification';
+  const socket = io('http://localhost:3001', {
+    transports: ["websocket", "polling"],
+    withCredentials: true,
+  });
+
+  // Fonction pour récupérer toutes les notifications
+useEffect(() => {
+const fetchNotifications = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/notifications`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+   setNotifications(response.data);
+   setUnreadCount(response.data.filter((notif) => notif.statut === 'non lu').length);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des notifications :", error);
+    throw error;
+  };
+};
+  fetchNotifications();
+
+  socket.on('newOrderNotification', (newNotification) => {
+    console.log('nouvelle notification:,' , newNotification)
+    setNotifications((prevNotification) => [newNotification, ...prevNotification ]);
+    setUnreadCount((prevUnreadCount) => prevUnreadCount + 1);
+  });
+
+  return () => {
+    socket.off('newOrderNotification');
+  };
+}, [socket]);
+
+// Fonction pour marquer une notification comme vue
+const markNotificationAsRead = async (idNotification) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/notifications/${idNotification}/vue`, {}, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la notification :", error);
+    throw error;
+  }
+};
+
+const extractCommandeIdFromMessage = (message) => {
+  if (!message) {
+    console.error('message is undefined');
+  }
+
+  console.log('massage notif', message);
+  const regex = /#(\d+)/;
+  const match = message.match(regex);
+  console.log(match)
+  return match ? match[1] : null;  
+}
+
+
+
+  // Marquer une notification comme vue
+  const handleMarkAsRead = async (notif) => {
+    console.log('notification cliquer:', notif)
+    const commandeId = extractCommandeIdFromMessage(notif.message);
+    console.log('commande id extrai:', commandeId)
+    if (commandeId) {
+      Navigate(`/infoCommande/${commandeId}`);
+    }
+    try {
+      await markNotificationAsRead(notif.idNotification);
+      setNotifications(notifications.map(n => n.idNotification === notif.idNotification ? { ...n, statut: 'Vu' } : n));
+      setUnreadCount(unreadCount - 1);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la notification", error);
+    }
+  };
+
+  
+
+  // Fonction pour basculer la modal
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+
   return (
     <header className="fixed top-0 left-0 w-full flex justify-between items-center p-4 text-white shadow-lg z-10 border-b-2 border-black" style={{backgroundColor: "#041122",
       boxShadow: "inset 50px rgba(0, 0, 0, 0.5)"
@@ -31,13 +122,40 @@ const Header = ({ toggleSidebar }) => {
 
       <div className="flex items-center space-x-2 ">
         <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaCalendarAlt className="cursor-pointer shadow-lg" /></div>
-        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaBell className="cursor-pointer" /></div>
-        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaUserCircle className="cursor-pointer" /></div>
-        
-        
-        
+        <div className='p-2 rounded-lg shadow-lg relative 'style={{backgroundColor: "#030C1B"}}><FaBell className="cursor-pointer" onClick={toggleNotifications}/>
+        {unreadCount > 0 && (
+          <span className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-2 text-xs'>{unreadCount}</span>
+        )}
+        </div>
+        <div className='p-2 rounded-lg shadow-lg 'style={{backgroundColor: "#030C1B"}}><FaUserCircle className="cursor-pointer" /></div> 
       </div>
 
+    {/* Modal des notifications */}
+    {showNotifications && (
+            <div className="absolute right-4 top-16 w-80 bg-white text-white rounded-2xl shadow-9xl z-20 p-4" style={{backgroundColor: "#041129"}}>
+              <h3 className="font-bold mb-4 text-center">Toutes les Notifications</h3>
+              <ul className="overflow-y-auto" style={{ maxHeight: '250px', direction: 'rtl', textAlign: 'left' }}>
+                {notifications.map((notif) => (
+                  <li
+                    key={notif.idNotification}
+                    className={`flex items-center p-2 border-b text-sm border-gray-900 cursor-pointer ${notif.statut === 'Vu' ? 'text-gray-500' : 'text-white font-bold'}`}
+                    onClick={() => handleMarkAsRead(notif.idNotification)}
+                  >
+                    <FaCircle className={`mr-2 ${notif.statut === 'Vu' ? 'text-gray-500' : 'text-green-500'}`} />
+                    <div className='flex-1'>
+                    
+                    <p className='mr-2 text-base'>{notif.message}</p>
+                    <p className='text-xs ml-4 text-gray-400'>{notif.statut}</p>
+                    </div>
+                    
+                  </li>
+                ))}
+            
+            
+          </ul>
+          <button onClick={toggleNotifications} className="mt-2 text-blue-500">Fermer</button>
+        </div>
+      )}
     </header>
   );
 };
