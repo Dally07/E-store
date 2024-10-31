@@ -489,7 +489,7 @@ useEffect(() => {
                     <th className="py-2 px-4 border-b">Nom</th>
                     <th className="py-2 px-4 border-b">Telephone</th>
                     <th className="py-2 px-4 border-b">adresse</th>
-                    <th className="py-2 px-4 border-b">total</th>
+                  
                   </tr>
                 </thead>
                 <tbody>
@@ -499,7 +499,6 @@ useEffect(() => {
               <td className="py-2 px-4 border-b">{client.nomCli}</td>
               <td className="py-2 px-4 border-b">{client.telCli}</td>
               <td className="py-2 px-4 border-b">{client.adresseCli}</td>
-              <td className="py-2 px-4 border-b">{Number(client.totalCommandes).toLocaleString()} MGA</td>
             </tr>
           ))}
         </tbody>

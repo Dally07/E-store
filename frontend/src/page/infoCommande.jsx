@@ -17,10 +17,7 @@ const InfoCommande = () => {
   const [heureArrivee, setHeureArrivee] = useState('');
   const [showModal, setShowModal] = useState(false); 
   const [showFactModal, setShowFactModal] = useState(false); 
-  const [livreur, setLivreur] = useState({ nom: '', voiture: '' }); 
-  const [deliveryDate, setDeliveryDate] = useState(''); 
-  const [arrivalDate, setArrivalDate] = useState(''); 
-  const [commandeStatus, setCommandeStatus] = useState('En cours'); 
+  const [commandeStatus, setCommandeStatus] = useState('En Traitement'); 
   const [loading, setLoading] = useState(true);
   const [commande, setCommande] = useState(null)
   const [livraison, setLivraison] = useState([]);
@@ -42,6 +39,7 @@ const InfoCommande = () => {
           setNumeroVehicule(livraisonData.numero_vehicule);
           setTelephoneLivreur(livraisonData.telephone_livreur);
           setHeureDepart(livraisonData.heure_depart);
+          setHeureArrivee(livraisonData.heure_arrivee)
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des détails de la commande :", error);
@@ -52,68 +50,44 @@ const InfoCommande = () => {
   }, [idCommande]);
 
   useEffect(() => {
-    const fetchLivraison = async () => {
+    const fetchLivraisons = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/livraison/${livraisonId}`);
-
-        setLivraison(response.data.livraison)
-      } catch(error) {
-        console.error('errreur lors de la recuperation des donnees de la livraison : ', error)
+        const response = await axios.get('http://localhost:3001/api/livraison');
+        setLivraison(response.data); // Assurez-vous que le backend renvoie un tableau de livraisons
+      } catch (error) {
+        console.error('Erreur lors de la récupération des livraisons:', error);
       }
     };
-    fetchLivraison();
-    
-  }, [livraisonId])
 
+    fetchLivraisons();
+  }, []);
+// ANNULER UNE COMMANDE
   const annulerComande = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:3001/api/commande/${idCommande}/annuler`, {}, {
+      const response = await axios.put(`http://localhost:3001/api/commande/${idCommande}/annuler`, {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-
-      console.log(response)
+      window.location.reload();
       alert(response.data.message);
     } catch (error) {
-      console.error('erreur poyur annuler le commande', error);
+      console.error('erreur pour annuler le commande', error);
       alert('erreur annulation commande');
     }
   }
-
-
+//MODAL LIVRAISON
   const handleLivrerClick = () => {
     setShowModal(true); // Afficher la modal lorsqu'on clique sur "Livrer"
   };
-
+// MODAL FACTURE
   const handleFactClick = () => {
     setShowFactModal(true); // Afficher la modal lorsqu'on clique sur "Livrer"
   };
-
+// FERMER UNE MODAL
   const closeModal = () => {
     setShowModal(false);
     setShowFactModal(false) // Fermer la modal
   };
-
-    // Gérer le changement de la date de livraison et mettre à jour le statut
-    const handleDeliveryDateChange = (e) => {
-      setDeliveryDate(e.target.value);
-     // Changer le statut à "En cours de livraison"
-    };
-  
-    // Gérer le changement de la date d'arrivée et mettre à jour le statut
-    const handleArrivalDateChange = (e) => {
-      setArrivalDate(e.target.value);
-       // Changer le statut à "Livrée"
-    };
-  
-    // Gérer le changement des informations du livreur
-    const handleLivreurChange = (e) => {
-      const { name, value } = e.target;
-      setLivreur((prevLivreur) => ({
-        ...prevLivreur,
-        [name]: value,
-      }));
-    };
 
     const handleSubmit = async (e) => { 
       e.preventDefault();
@@ -124,21 +98,26 @@ const InfoCommande = () => {
         vehicule: vehicule,
         numero_vehicule: numeroVehicule,
         telephone_livreur: telephoneLivreur,
-        heure_depart: heureDepart
+        heure_depart: heureDepart,
+        heure_arrivee: heureArrivee,
 
       }
       // Logique pour envoyer ou valider les données de livraison
       try {
         // Appel à l'API pour créer une livraison
-        const response = await axios.post('http://localhost:3001/api/livraison',data );
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:3001/api/livraison',data ,{
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         console.log('reponse api:', response.data)
 
-          setResponsesMessage(response.data.message) ;
+        setResponsesMessage(response.data.message) ;
       } catch (error) {
         console.error("Erreur lors de la création de la livraison :", error);
         setResponsesMessage('erreur de la creation de livraison');
       }
       setShowModal(false);
+      window.location.reload();
        // Fermer le modal après validation
     };
 
@@ -150,21 +129,7 @@ const InfoCommande = () => {
         case 'Annulée' : return 'bg-gray-500';
       }
      }
-
-     const formatDate = (dateString) => {
-
-  const date = new Date(dateString);
-  if (isNaN(date)) {
-    return '';
-  }
-  const day = String(date.getDate());
-  const month = String(date.getMonth() + 1);
-  const year = date.getFullYear();
-
-  return `${day}/${month}/${year}`;
- };
     
-
     const createFact = () => {
       setShowFactModal(false);
     }
@@ -257,8 +222,9 @@ const InfoCommande = () => {
                   <input 
                     type="date" 
                     className="w-full p-2 rounded  text-black"
-                    value={arrivalDate}
-                    onChange={handleArrivalDateChange}
+                    value={heureArrivee}
+                    onChange={(e) => setHeureArrivee(e.target.value)}
+                    required
                   />
                     </div>
                   
@@ -285,7 +251,7 @@ const InfoCommande = () => {
                     name="nom" 
                     className="w-full p-2 text-black rounded-md mb-4"
                     placeholder="Nom du livreur"
-                    value={telephoneLivreur}
+                    value={nomLivreur}
             onChange={(e) => setNomLivreur(e.target.value)}
             required
                   />
@@ -475,13 +441,19 @@ const InfoCommande = () => {
                 <p className="text-sm">Aucune facture trouvée</p>
               </div>
 
-              <div className=" p-4 rounded-lg" style={{backgroundColor: "#041122"}}>
-                <h4 className="font-bold">Expéditions (0)</h4>
-                <Link to={`/infoLivraison/${livraison.idLivraison}`}>
-                <p className="text-sm text-blue-800 cursor-pointer py-4 ml-3">Voir</p>
-                </Link>
-                
-              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#041122" }}>
+      <h4 className="font-bold">Expéditions ({livraison.length})</h4>
+
+      {livraison ? (
+          <div className="my-2">
+            <Link to={`/infoLivraison/${livraison.idLivraison}`}>
+              <p className="text-sm text-blue-800 cursor-pointer py-4 ml-3">Voir</p>
+            </Link>
+          </div>
+      ) : (
+        <p className="text-gray-500">Aucune livraison disponible</p>
+      )}
+    </div>
 
               <div className=" p-4 rounded-lg col-span-2" style={{backgroundColor: "#041122"}}>
                 <h4 className="font-bold">Paiement et Expédition</h4>

@@ -33,8 +33,8 @@ const InfoLivraison = () => {
   if (!livraison) {
     return <p className='text-white'>chargement</p>
   }
-const {Commande} = livraison;
-const { client, paiement } = Commande || {};
+const {commande} = livraison;
+const { client, paiement } = commande || {};
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: '#030C1B' }}>
@@ -49,7 +49,7 @@ const { client, paiement } = Commande || {};
                     <h2 className="text-2xl font-bold">Livraison n°{livraison.idLivraison}</h2>
                   </div>
                   <div className="bg-green-600 text-white rounded ml-4">
-                    <span className="px-1 text-center">{livraison.Commande.statut}</span>
+                    <span className="px-1 text-center">{livraison.commande.statut}</span>
                   </div>
                     
                     
@@ -81,8 +81,8 @@ const { client, paiement } = Commande || {};
 
             {/* Articles à commander */}
             <div id='section-imprimer' className=" p-4 rounded-lg mb-0 border-b-2 border-gray" style={{backgroundColor: "#041122"}}>
-              <h3 className="text-lg font-bold border-b-2 py-2 border-gray">Article commander ({livraison.Commande.produits.length})</h3>
-              {livraison.Commande?.produits.map(produit => (
+              <h3 className="text-lg font-bold border-b-2 py-2 border-gray">Article commander({livraison.commande.produits.length})</h3>
+              {livraison.commande?.produits.map(produit => (
                    <div className="flex justify-between items-center p-4 rounded-lg mt-4" style={{backgroundColor: "#041122"}}>
                    <div className="flex items-center">
                      <img src={`http://localhost:3001/uploads/${produit.photo1}`} alt="product" className="w-20 h-20 object-cover mr-4" />
@@ -117,7 +117,7 @@ const { client, paiement } = Commande || {};
             <div id='section-imprimer1' className="flex justify-between items-center  p-4 rounded-lg mb-6" style={{backgroundColor: "#041122"}}>
                 <div></div>
               <div className="text-right">  
-            <p  className="text-lg font-bold text-right">Total : {livraison.Commande.total} MGA</p>
+            <p  className="text-lg font-bold text-right">Total : {livraison.commande.total} MGA</p>
               </div>
             </div>
 
@@ -140,11 +140,11 @@ const { client, paiement } = Commande || {};
 
               <div className=" p-4 rounded-lg" style={{backgroundColor: "#041122"}}>
                 <h4 className="font-bold mb-4">Informations sur la commande</h4>
-                {Commande ? (
+                {commande ? (
                   <>
-                <p className="text-sm">ID de la commande: <strong className='text-blue-500 ml-8'>#{Commande.idCommande}</strong></p>
-                <p className="text-sm">Date de la commande: <strong className='ml-4'>{new Date(Commande.date_commande).toLocaleString()}</strong></p>
-                <p className="text-sm">Statut de la commande: <strong className='ml-3'>{Commande.statut}</strong> </p>
+                <p className="text-sm">ID de la commande: <strong className='text-blue-500 ml-8'>#{commande.idCommande}</strong></p>
+                <p className="text-sm">Date de la commande: <strong className='ml-4'>{new Date(commande.date_commande).toLocaleString()}</strong></p>
+                <p className="text-sm">Statut de la commande: <strong className='ml-3'>{commande.statut}</strong> </p>
                 
                 </>
                 ) : (

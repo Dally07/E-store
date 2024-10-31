@@ -13,7 +13,7 @@ const ConfigurationAccessoire = require('../models/config_accessoire');
 // cree une livraison avec heure de depart pour valider la staut du commande(en cours de livraison)
 exports.createLivraison = async (req, res) => {
     try {
-        const { commande_id, nom_livreur, vehicule, numero_vehicule, telephone_livreur, heure_depart } = req.body;
+        const { commande_id, nom_livreur, vehicule, numero_vehicule, telephone_livreur, heure_depart, heure_arrivee } = req.body;
 
         const commande = await Commande.findByPk(commande_id, {
             include: { model: Client, as: 'client', attributes: ['adresseCli']}
@@ -40,7 +40,8 @@ exports.createLivraison = async (req, res) => {
             numero_vehicule,
             telephone_livreur,
             adresse_livraison,
-            heure_depart
+            heure_depart,
+            heure_arrivee
         });
 
         await Commande.update({ statut: 'En livraison'}, { where: {idCommande: commande_id } });
@@ -87,7 +88,7 @@ exports.getLivraisonById = async (req, res) => {
         const livraison = await Livraison.findByPk(livraisonId, {
             include: [
                 {
-                    model: Commande,
+                    model: Commande, as:'commande',
                     
                     include: [
                         {
@@ -129,7 +130,7 @@ exports.getAllLivraisons = async (req, res) => {
     try {
         const livraisons = await Livraison.findAll({
             include: {
-                model: Commande,
+                model: Commande , as:'commande',
                 include: {
                     model: Client,
                     as: 'client',

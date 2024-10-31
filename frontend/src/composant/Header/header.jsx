@@ -104,7 +104,7 @@ const markNotificationAsRead = async (idNotification) => {
       </div>
 
       {/* Barre de recherche avec un espacement de 2 cm (ml-8) */}
-      <div className="flex items-center justify-between rounded-md ml-8" style={{backgroundColor: "#030C1B"}}>
+      <div className="flex items-center justify-between rounded-md " style={{backgroundColor: "#030C1B"}}>
         <input
           type="text"
           placeholder="Effectuer votre recherche ici"

@@ -44,10 +44,10 @@ const Products = () => {
     const categoryMatch = selectedCategory ? product.categorie === selectedCategory : true;
     const quantityMatch = selectedQuantity ? 
       (selectedQuantity === "disponible" ? product.quantite_en_stock > 11 :
-       selectedQuantity === "critique" ? product.quantite_en_stock <= 10 && product.quantity > 0 :
+       selectedQuantity === "critique" ? product.quantite_en_stock <= 10 && product.quantite_en_stock > 0 :
        selectedQuantity === "rupture" ? product.quantite_en_stock === 0 : true) 
       : true;
-
+        
       const searchMatch = searchTerm ? 
       product.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.nom.toLowerCase().includes(searchTerm.toLowerCase()) : true;
@@ -258,7 +258,7 @@ const Products = () => {
           <option value="rupture">Rupture de Stock (0)</option>
         </select>
       </div>
-
+      
       <button
         onClick={() => {
           setIsFilterModalOpen(false);

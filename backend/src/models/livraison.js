@@ -54,9 +54,7 @@ const Livraison = sequelize.define('Livraison', {
     }
 });
 
-Livraison.belongsTo(Commande, {foreignKey: 'commande_id', onDelete: 'CASCADE'});
 
-Livraison.belongsTo(Client, {foreignKey: 'client_id', as: 'client'});
 
 
 module.exports = Livraison;

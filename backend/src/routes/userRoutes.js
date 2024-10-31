@@ -20,7 +20,7 @@ router.post('/register',authMiddleware,requireRole('Administrateur'), upload.sin
 // Admin routes
 router.get('/',  userController.getAllUsers);
 router.get('/:id', authMiddleware, requireRole('Administrateur'), userController.getUserById);
-router.put('/:id', authMiddleware, upload.single('photo'), requireRole('Administrateur'), userController.updateUser);
+router.put('/:id', upload.single('photo'), userController.updateUser);
 router.delete('/:id', authMiddleware, requireRole('Administrateur'), userController.deleteUser);
 
 module.exports = router;

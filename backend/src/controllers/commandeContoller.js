@@ -11,6 +11,7 @@ const { envoyerNotification } = require('../utils/notificationUtil');
 const Notification = require('../models/notification');
 const Utilisateur = require('../models/utilisateur');
 const { Op } = require('sequelize');
+const Livraison = require('../models/livraison');
 
 
 exports.passerCommande = async (req, res, io) => {
@@ -171,6 +172,7 @@ exports.getCommandeDetails = async (req, res) => {
       const commande = await Commande.findByPk(idCommande, {
         include: [
             {model: Paiement, as: 'paiement' } ,
+            {model: Livraison, as: 'livraison' } ,
           { model: Produit, as: 'produits', include: [
             { model: ConfigurationPC, as: 'configPC' },
                 { model: ConfigurationImprimante, as: 'configImprimante' },

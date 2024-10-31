@@ -367,42 +367,42 @@ const CreateProduct = () => {
                     )}
                     
                     {/* Conditional Rendering for Configuration */}
-                    {!isEditMode && category === 'PC' && product.configPC ? (
+                    {category === 'PC' && (
                       <>
                         <div className="mt-4">
                           <label>Carte Graphique</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.carte_graphique" value={newForm.configuration.carte_graphique || product.configPC.carte_graphique} 
+                            name="configuration.carte_graphique" value={newForm.configuration.carte_graphique} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>Processeur</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.processeur" value={newForm.configuration.processeur || product.configPC.processeur} 
+                            name="configuration.processeur" value={newForm.configuration.processeur} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>RAM</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.ram" value={newForm.configuration.ram || product.configPC.ram} 
+                            name="configuration.ram" value={newForm.configuration.ram} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>ROM</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.rom" value={newForm.configuration.rom || product.configPC.rom} 
+                            name="configuration.rom" value={newForm.configuration.rom} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>Marque</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.marque" value={newForm.configuration.marque || product.configPC.marque} 
+                            name="configuration.marque" value={newForm.configuration.marque} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>Écran</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.ecran" value={newForm.configuration.ecran || product.configPC.ecran} 
+                            name="configuration.ecran" value={newForm.configuration.ecran} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4 flex items-center">
@@ -416,36 +416,36 @@ const CreateProduct = () => {
                         <div>
                         </div>
                       </>
-                    ) :
-                    !isEditMode  && product.categorie === 'Telephone' && product.configTelephone ? (
+                    )} 
+                    {category === 'Telephone' &&  (
                       <>
                         <div className="mt-4">
                           <label>Processeur</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.processeur" value={newForm.configuration.processeur || product.configTelephone?.processeur} 
+                            name="configuration.processeur" value={newForm.configuration.processeur} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>RAM</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.ram" value={newForm.configuration.ram || product.configTelephone?.ram} 
+                            name="configuration.ram" value={newForm.configuration.ram} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>ROM</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.rom" value={newForm.configuration.rom || product.configTelephone?.rom} 
+                            name="configuration.rom" value={newForm.configuration.rom} 
                             onChange={handleInputChange} />
                         </div>
                         <div className="mt-4">
                           <label>Marque</label>
                           <input className='w-full p-2' style={{ backgroundColor: '#041122' }} type="text"
-                            name="configuration.marque" value={newForm.configuration.marque || product.configTelephone?.marque} 
+                            name="configuration.marque" value={newForm.configuration.marque} 
                             onChange={handleInputChange} />
                         </div>
                       </>
-                    ) :
-                    !isEditMode && product.categorie === 'Imprimante' && product.configImprimante ?(
+                    ) }
+                    {category === 'Imprimante' && (
                       <>
                         <div className="mt-4">
                           <label>Type Imprimante</label>
@@ -472,8 +472,9 @@ const CreateProduct = () => {
                             onChange={handleInputChange} />
                         </div>
                       </>
-                    ):
-                    !isEditMode && product.categorie === 'Accessoire' && product.configAccessoire ? (
+                    )}
+
+                   {category === 'Accessoire' && (
                       <>
                       <div className="mt-4">
                           <label>Marque</label>
@@ -499,8 +500,6 @@ const CreateProduct = () => {
                         
                       </>
                       
-                    ) : (
-                      <span>Aucune specification</span>
                     )}
 
                             

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Loginpage from "./LoginPage"
 import Dashboard from './page/dashboard';
@@ -14,14 +14,16 @@ import InfoLivraison from './page/infoLivraison';
 import Client from './page/client';
 import Rapport from './page/rapport';
 import Livraison from './page/livraison';
+import { layouts } from 'chart.js';
 
 function App() {
+  const isAuthenticated = localStorage.getItem('token');
   return (
     <Router>
       <Routes>
       
         <Route path="/login" element={<Loginpage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={isAuthenticated ? ( <layouts><Dashboard /></layouts> ) : (<Navigate to="/login" replace />) } />
         <Route path="/products" element={<Products/>} />
         <Route path="/commande" element={<Commande/>} />
         <Route path="/utilisateur" element={<Utilisateur/>} />
